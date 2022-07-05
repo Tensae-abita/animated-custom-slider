@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:sania/app_bar.dart';
 import 'dart:math' as Math;
 
 import 'package:sania/body.dart';
@@ -17,8 +18,10 @@ class _Slider_WidgetState extends State<Slider_Widget> {
   @override
   Widget build(BuildContext context) {
   
-    return Container(
-      child: Slider(),
+    return SafeArea(
+      child: Slider(
+        theHeight: MediaQuery.of(context).size.height,
+      ),
     );
   }
 }
@@ -26,7 +29,8 @@ class _Slider_WidgetState extends State<Slider_Widget> {
 class Slider extends StatefulWidget {
   
   final double height;
-  Slider({this.height=50}) ;
+  final double theHeight;
+  Slider({this.height=50, required this.theHeight}) ;
 
   @override
   State<Slider> createState() => _SliderState();
@@ -34,8 +38,10 @@ class Slider extends StatefulWidget {
 
 class _SliderState extends State<Slider> {
    
-    double _dragPosition=170;
-    double _dragPercentage=0;
+  late  Offset _dragPosition;
+  late  double _dragPercentage;
+    
+    
 
    void _UpdateDragPosion(Offset val){
     double newDragPosition=0;
@@ -48,7 +54,7 @@ class _SliderState extends State<Slider> {
     }
 
     setState(() {
-      _dragPosition=newDragPosition;
+      _dragPosition=ui.Offset(newDragPosition, 0) ;
       _dragPercentage=newDragPosition/MediaQuery.of(context).size.width*0.75;
     });
    }
@@ -59,6 +65,10 @@ class _SliderState extends State<Slider> {
     Offset offset= box!.globalToLocal(update.globalPosition);
     print(offset.dx);
     _UpdateDragPosion(offset);
+     setState(() {
+       _dragPosition=Offset(offset.dx, offset.dy);
+    });
+   
 
   }
 
@@ -66,6 +76,10 @@ class _SliderState extends State<Slider> {
     RenderBox? box= context.findRenderObject() as RenderBox?;
     Offset offset= box!.globalToLocal(start.globalPosition);
     _UpdateDragPosion(offset);
+    setState(() {
+       _dragPosition=Offset(offset.dx, offset.dy);
+    });
+   
 
   }
 // animation after end of drag
@@ -76,7 +90,7 @@ class _SliderState extends State<Slider> {
 
    void _onDragEnd(BuildContext context, DragEndDetails end){
     setState(() {
-      _dragPosition=170;
+      _dragPosition=ui.Offset(170, widget.theHeight *0.78) ;
     });
    
   }
@@ -85,9 +99,16 @@ class _SliderState extends State<Slider> {
 // animation after end of drag
 // animation after end of drag
 // animation after end of drag
+@override
+  void initState() {
+    // TODO: implement initState
 
+    super.initState();
+     _dragPosition=Offset(170,widget.theHeight*0.78);
+    _dragPercentage=0;
+  }
 
-  @override
+//   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -96,10 +117,16 @@ class _SliderState extends State<Slider> {
           width: MediaQuery.of(context).size.width,
         ),
         Positioned(
+          top: 0,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            child: Appbar())),
+        Positioned(
           bottom: 0,
           child: Bottom_nav()),
         Positioned(
-         left: _dragPosition - MediaQuery.of(context).size.width*0.415,
+         left: _dragPosition.dx - MediaQuery.of(context).size.width*0.415,
+         top: _dragPosition.dy - widget.theHeight*0.72,
          
           child: body()),
           // Positioned(
@@ -107,11 +134,13 @@ class _SliderState extends State<Slider> {
           //   left: 50,
           //   child: Text(_dragPosition.toString())),
         Positioned(
-          top: MediaQuery.of(context).size.height*0.708,
+          top: widget.theHeight*0.77,
           left: MediaQuery.of(context).size.width*0.14,
           child: GestureDetector(
             child: Container(
               height: 80,
+              // color: Colors.blue,
+
               width: MediaQuery.of(context).size.width*0.82,
               
               //       decoration: BoxDecoration(
@@ -132,9 +161,12 @@ class _SliderState extends State<Slider> {
               child: CustomPaint(
                 
                 painter: WavePainter(
+                  heights: widget.theHeight,
                   sliderPosition: _dragPosition, 
                   dragPercentage: _dragPercentage,
-                  color: Color(0XFFF2F2F2),)
+                  color: Color(0XFFF2F2F2),
+                
+                  )
               ),
             ),
              onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdate(context, update),
@@ -144,9 +176,10 @@ class _SliderState extends State<Slider> {
         ),
         
          Positioned(
-          left: _dragPosition + MediaQuery.of(context).size.width*0.1,
-          top: MediaQuery.of(context).size.height*0.71 ,
-          child: Text(_dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString())),
+          left: _dragPosition.dx + MediaQuery.of(context).size.width*0.1,
+          top: _dragPosition.dy-10 ,
+        child: Text(_dragPosition.dy.toString()),)
+        //  child: Text(_dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString())),
           //  Positioned(
           // left: _dragPosition - 20,
           // top: 20,
@@ -170,16 +203,18 @@ class _SliderState extends State<Slider> {
 
 class WavePainter extends CustomPainter {
 
-  final double sliderPosition;
+  final Offset sliderPosition;
   final double dragPercentage;
 
   final Color color;
   
   final Paint circlePainter;
   final Paint linePianter;
+  final double heights;
 
-  WavePainter(
+  WavePainter( 
     {required this.sliderPosition,
+    required this.heights,
     required this.dragPercentage, 
     required this.color}): circlePainter = Paint()
      ..color=color
@@ -228,15 +263,24 @@ class WavePainter extends CustomPainter {
   }
 
   _paintLine(Canvas canvas,Size size ){
+    
     Path path=Path();
     path.moveTo(20, size.height/2);
-    path.lineTo(size.width -15, size.height/2);
+    path.lineTo(sliderPosition.dy<heights*0.78 || sliderPosition.dy>heights*0.85?20:sliderPosition.dx-25, size.height/2);
+    sliderPosition.dy<heights*0.78 || sliderPosition.dy>heights*0.85? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
+     path.cubicTo(sliderPosition.dx-20, 60, sliderPosition.dx+10, 75, sliderPosition.dx+25, size.height/2);
+
+      
+    path.lineTo(size.width-20, size.height/2);
+
+   
+    
     canvas.drawPath(path , linePianter);
   }
 
    _smileyPaint(Canvas canvas, Size size) {
     final radius = Math.min(size.width, size.height) / 5;
-    var center = Offset(sliderPosition , size.height /2) ;
+    var center = Offset(sliderPosition.dx , size.height /2) ;
 
     // canvas.drawRect(center,Paint());
     canvas.drawCircle(center, radius, Paint());
@@ -257,7 +301,7 @@ class WavePainter extends CustomPainter {
   }
 
   _drowArc1(Canvas canvas, Size size) {
-var center = Offset(sliderPosition - 30, size.height *0.32) ;
+var center = Offset(sliderPosition.dx - 30, size.height *0.32) ;
      var paint1 = Paint()
       ..color = ui.Color.fromARGB(255, 10, 10, 10)
       ..style = PaintingStyle.stroke
@@ -270,7 +314,7 @@ var center = Offset(sliderPosition - 30, size.height *0.32) ;
         paint1);
   }
    _drowArc2(Canvas canvas, Size size) {
-var center = Offset(sliderPosition - 25, size.height *0.38) ;
+var center = Offset(sliderPosition.dx - 25, size.height *0.38) ;
      var paint1 = Paint()
       ..color = ui.Color.fromARGB(255, 10, 10, 10)
       ..style = PaintingStyle.stroke
@@ -284,7 +328,7 @@ var center = Offset(sliderPosition - 25, size.height *0.38) ;
   }
 
   _drowArc3(Canvas canvas, Size size) {
-var center = Offset(sliderPosition + 5, size.height *0.38) ;
+var center = Offset(sliderPosition.dx + 5, size.height *0.38) ;
      var paint1 = Paint()
       ..color = ui.Color.fromARGB(255, 10, 10, 10)
       ..style = PaintingStyle.stroke
@@ -297,7 +341,7 @@ var center = Offset(sliderPosition + 5, size.height *0.38) ;
         paint1);
   }
   _drowArc4(Canvas canvas, Size size) {
-var center = Offset(sliderPosition + 0.4, size.height *0.30) ;
+var center = Offset(sliderPosition.dx + 0.4, size.height *0.30) ;
      var paint1 = Paint()
       ..color = ui.Color.fromARGB(255, 10, 10, 10)
       ..style = PaintingStyle.stroke

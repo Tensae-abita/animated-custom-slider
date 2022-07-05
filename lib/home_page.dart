@@ -15,10 +15,7 @@ class _Home_PageState extends State<Home_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0XFFF2F2F2),
-        title: Appbar(),
-      ),
+       
       body: Slider_Widget(),
       // bottomNavigationBar: Bottom_nav(),
     );

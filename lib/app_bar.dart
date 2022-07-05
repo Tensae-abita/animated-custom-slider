@@ -10,9 +10,11 @@ class Appbar extends StatelessWidget {
     return Container(
        
         color: Color(0XFFF2F2F2),
-        
+        height: MediaQuery.of(context).size.height*0.07,
         child: Row(
-         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+         mainAxisSize: MainAxisSize.max,
+        
           children: [
              Container(
             

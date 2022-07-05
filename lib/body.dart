@@ -344,8 +344,7 @@ class body extends StatelessWidget {
                       child: Row(
                         children: [
                             Text('Sexy'),
-                             
-                            // //slider place 
+                             // //slider place 
                             // Slider_Widget()
         
                         ],
@@ -357,7 +356,9 @@ class body extends StatelessWidget {
                    
                       Row(
                         children: [
-                           Icon(Icons.add,size: 30,),
+                           Container(
+                            height: 20,
+                            child: Icon(Icons.add,size: 30,)),
                           SizedBox(width: 10,),
                           Expanded(
                             child: SingleChildScrollView(
