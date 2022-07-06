@@ -343,7 +343,13 @@ class body extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       child: Row(
                         children: [
-                            Text('Sexy'),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 32),
+                              child: Text('Sexy',style: TextStyle(
+                                fontSize:18,
+                                
+                              ),),
+                            ),
                              // //slider place 
                             // Slider_Widget()
         

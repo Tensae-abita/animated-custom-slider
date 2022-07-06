@@ -16,7 +16,10 @@ class _Home_PageState extends State<Home_Page> {
   Widget build(BuildContext context) {
     return Scaffold(
        
-      body: Slider_Widget(),
+      body: Slider_Widget(
+        ultimateHeight: MediaQuery.of(context).size.height,
+        ultimateWidth: MediaQuery.of(context).size.width,
+      ),
       // bottomNavigationBar: Bottom_nav(),
     );
   }

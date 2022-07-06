@@ -7,8 +7,15 @@ import 'package:sania/body.dart';
 import 'package:sania/bottom_nav.dart';
 
 class Slider_Widget extends StatefulWidget {
+
+  final double ultimateHeight;
+  final double ultimateWidth;
   
-  Slider_Widget({Key? key}) : super(key: key);
+  Slider_Widget({
+  required this.ultimateHeight,
+   required this.ultimateWidth,
+  }
+  );
 
   @override
   State<Slider_Widget> createState() => _Slider_WidgetState();
@@ -20,7 +27,8 @@ class _Slider_WidgetState extends State<Slider_Widget> {
   
     return SafeArea(
       child: Slider(
-        theHeight: MediaQuery.of(context).size.height,
+        ultimateHeight:widget.ultimateHeight,
+        ultimateWidth: widget.ultimateWidth,
       ),
     );
   }
@@ -29,8 +37,11 @@ class _Slider_WidgetState extends State<Slider_Widget> {
 class Slider extends StatefulWidget {
   
   final double height;
-  final double theHeight;
-  Slider({this.height=50, required this.theHeight}) ;
+  
+  final double ultimateHeight;
+    final double ultimateWidth;
+
+  Slider({this.height=50, required this.ultimateHeight, required this.ultimateWidth}) ;
 
   @override
   State<Slider> createState() => _SliderState();
@@ -47,8 +58,8 @@ class _SliderState extends State<Slider> {
     double newDragPosition=0;
     if(val.dx <= 20){
       newDragPosition=20;
-    } else if(val.dx >= MediaQuery.of(context).size.width*0.80-25){
-      newDragPosition=MediaQuery.of(context).size.width*0.80-25;
+    } else if(val.dx >= MediaQuery.of(context).size.width*0.8025){
+      newDragPosition=MediaQuery.of(context).size.width*0.8025;
     }else{
       newDragPosition=val.dx;
     }
@@ -63,10 +74,10 @@ class _SliderState extends State<Slider> {
   void _onDragUpdate(BuildContext context, DragUpdateDetails update){
     RenderBox? box= context.findRenderObject() as RenderBox?;
     Offset offset= box!.globalToLocal(update.globalPosition);
-    print(offset.dx);
+    
     _UpdateDragPosion(offset);
      setState(() {
-       _dragPosition=Offset(offset.dx, offset.dy);
+       _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
     });
    
 
@@ -76,8 +87,8 @@ class _SliderState extends State<Slider> {
     RenderBox? box= context.findRenderObject() as RenderBox?;
     Offset offset= box!.globalToLocal(start.globalPosition);
     _UpdateDragPosion(offset);
-    setState(() {
-       _dragPosition=Offset(offset.dx, offset.dy);
+    setState(() { 
+       _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
     });
    
 
@@ -90,7 +101,7 @@ class _SliderState extends State<Slider> {
 
    void _onDragEnd(BuildContext context, DragEndDetails end){
     setState(() {
-      _dragPosition=ui.Offset(170, widget.theHeight *0.78) ;
+      _dragPosition=Offset(widget.ultimateWidth*0.4, widget.ultimateHeight *0.78) ;
     });
    
   }
@@ -104,7 +115,7 @@ class _SliderState extends State<Slider> {
     // TODO: implement initState
 
     super.initState();
-     _dragPosition=Offset(170,widget.theHeight*0.78);
+     _dragPosition=Offset(widget.ultimateWidth*0.4,widget.ultimateHeight*0.78);
     _dragPercentage=0;
   }
 
@@ -112,21 +123,20 @@ class _SliderState extends State<Slider> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-        ),
+      
         Positioned(
           top: 0,
           child: Container(
             width: MediaQuery.of(context).size.width,
             child: Appbar())),
+           
         Positioned(
+         
           bottom: 0,
           child: Bottom_nav()),
         Positioned(
-         left: _dragPosition.dx - MediaQuery.of(context).size.width*0.415,
-         top: _dragPosition.dy - widget.theHeight*0.72,
+         left: _dragPosition.dx - widget.ultimateWidth*0.415,
+         top: _dragPosition.dy - widget.ultimateHeight*0.72,
          
           child: body()),
           // Positioned(
@@ -134,14 +144,14 @@ class _SliderState extends State<Slider> {
           //   left: 50,
           //   child: Text(_dragPosition.toString())),
         Positioned(
-          top: widget.theHeight*0.77,
-          left: MediaQuery.of(context).size.width*0.14,
+          top: widget.ultimateHeight*0.73,
+          left: widget.ultimateWidth*0.14,
           child: GestureDetector(
             child: Container(
               height: 80,
               // color: Colors.blue,
 
-              width: MediaQuery.of(context).size.width*0.82,
+              width:widget.ultimateWidth*0.82,
               
               //       decoration: BoxDecoration(
               //     gradient:LinearGradient(
@@ -161,7 +171,7 @@ class _SliderState extends State<Slider> {
               child: CustomPaint(
                 
                 painter: WavePainter(
-                  heights: widget.theHeight,
+                  heights: widget.ultimateHeight,
                   sliderPosition: _dragPosition, 
                   dragPercentage: _dragPercentage,
                   color: Color(0XFFF2F2F2),
@@ -176,12 +186,12 @@ class _SliderState extends State<Slider> {
         ),
         
          Positioned(
-          left: _dragPosition.dx + MediaQuery.of(context).size.width*0.1,
-          top: _dragPosition.dy-10 ,
-        child: Text(_dragPosition.dy.toString()),)
-        //  child: Text(_dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString())),
+          left: _dragPosition.dx + widget.ultimateWidth*0.11,
+          top: _dragPosition.dy-widget.ultimateHeight*0.045 ,
+        // child: Text(_dragPosition.dy.toString()),)
+         child: Text(_dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString())),
           //  Positioned(
-          // left: _dragPosition - 20,
+          // left: _dragPosition.dx - 20,
           // top: 20,
           // child: CircleAvatar(
           //   radius: 20,
@@ -266,9 +276,9 @@ class WavePainter extends CustomPainter {
     
     Path path=Path();
     path.moveTo(20, size.height/2);
-    path.lineTo(sliderPosition.dy<heights*0.78 || sliderPosition.dy>heights*0.85?20:sliderPosition.dx-25, size.height/2);
-    sliderPosition.dy<heights*0.78 || sliderPosition.dy>heights*0.85? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
-     path.cubicTo(sliderPosition.dx-20, 60, sliderPosition.dx+10, 75, sliderPosition.dx+25, size.height/2);
+    path.lineTo(sliderPosition.dy<heights*0.78 || sliderPosition.dy>heights*0.79?20:sliderPosition.dx-25, size.height/2);
+    sliderPosition.dy<heights*0.78 || sliderPosition.dy>heights*0.79? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
+     path.cubicTo(sliderPosition.dx-20, 75, sliderPosition.dx+15, 75, sliderPosition.dx+25, size.height/2);
 
       
     path.lineTo(size.width-20, size.height/2);
@@ -280,7 +290,7 @@ class WavePainter extends CustomPainter {
 
    _smileyPaint(Canvas canvas, Size size) {
     final radius = Math.min(size.width, size.height) / 5;
-    var center = Offset(sliderPosition.dx , size.height /2) ;
+    var center = Offset(sliderPosition.dx , sliderPosition.dy-heights*0.73) ;
 
     // canvas.drawRect(center,Paint());
     canvas.drawCircle(center, radius, Paint());
@@ -301,7 +311,7 @@ class WavePainter extends CustomPainter {
   }
 
   _drowArc1(Canvas canvas, Size size) {
-var center = Offset(sliderPosition.dx - 30, size.height *0.32) ;
+var center = Offset(sliderPosition.dx - 30,sliderPosition.dy-heights*0.75) ;
      var paint1 = Paint()
       ..color = ui.Color.fromARGB(255, 10, 10, 10)
       ..style = PaintingStyle.stroke
@@ -314,7 +324,7 @@ var center = Offset(sliderPosition.dx - 30, size.height *0.32) ;
         paint1);
   }
    _drowArc2(Canvas canvas, Size size) {
-var center = Offset(sliderPosition.dx - 25, size.height *0.38) ;
+var center = Offset(sliderPosition.dx - 25, sliderPosition.dy-heights*0.744) ;
      var paint1 = Paint()
       ..color = ui.Color.fromARGB(255, 10, 10, 10)
       ..style = PaintingStyle.stroke
@@ -328,7 +338,7 @@ var center = Offset(sliderPosition.dx - 25, size.height *0.38) ;
   }
 
   _drowArc3(Canvas canvas, Size size) {
-var center = Offset(sliderPosition.dx + 5, size.height *0.38) ;
+var center = Offset(sliderPosition.dx + 5, sliderPosition.dy-heights*0.744) ;
      var paint1 = Paint()
       ..color = ui.Color.fromARGB(255, 10, 10, 10)
       ..style = PaintingStyle.stroke
@@ -341,7 +351,7 @@ var center = Offset(sliderPosition.dx + 5, size.height *0.38) ;
         paint1);
   }
   _drowArc4(Canvas canvas, Size size) {
-var center = Offset(sliderPosition.dx + 0.4, size.height *0.30) ;
+var center = Offset(sliderPosition.dx + 0.4, sliderPosition.dy-heights*0.75) ;
      var paint1 = Paint()
       ..color = ui.Color.fromARGB(255, 10, 10, 10)
       ..style = PaintingStyle.stroke
