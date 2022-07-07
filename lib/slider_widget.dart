@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:sania/app_bar.dart';
 import 'dart:math' as Math;
+import 'package:animated_rotation/animated_rotation.dart'  as AnimatedRotation ;
 
 import 'package:sania/body.dart';
 import 'package:sania/bottom_nav.dart';
@@ -78,8 +79,9 @@ class _SliderState extends State<Slider> {
     _UpdateDragPosion(offset);
      setState(() {
        _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
+         getRotation();
     });
-   
+  
 
   }
 
@@ -91,7 +93,7 @@ class _SliderState extends State<Slider> {
        _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
     });
    
-
+    
   }
 // animation after end of drag
 // animation after end of drag
@@ -119,6 +121,33 @@ class _SliderState extends State<Slider> {
     _dragPercentage=0;
   }
 
+  getRotation(){
+  
+  double angle=0;
+     if(_dragPosition.dy>widget.ultimateHeight*0.81 || _dragPosition.dy<widget.ultimateHeight*0.76 ){
+     
+      setState(() {
+        
+        angle=(_dragPosition.dx /1000)-0.16;
+       
+      });
+      
+        
+     }else {
+     
+      setState(() {
+       
+        angle=-(_dragPosition.dx /1000)+0.16;
+        
+      });
+     }
+      
+   
+    
+
+    return angle;
+  }
+
 //   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -138,11 +167,11 @@ class _SliderState extends State<Slider> {
          left: _dragPosition.dx - widget.ultimateWidth*0.415,
          top: _dragPosition.dy - widget.ultimateHeight*0.72,
          
-          child: body()),
-          // Positioned(
-          //   top: 200,
-          //   left: 50,
-          //   child: Text(_dragPosition.toString())),
+          child: Transform.rotate(
+            angle:getRotation() ,
+             
+           child: body())),
+     
         Positioned(
           top: widget.ultimateHeight*0.73,
           left: widget.ultimateWidth*0.14,
@@ -276,8 +305,8 @@ class WavePainter extends CustomPainter {
     
     Path path=Path();
     path.moveTo(20, size.height/2);
-    path.lineTo(sliderPosition.dy<heights*0.78 || sliderPosition.dy>heights*0.79?20:sliderPosition.dx-25, size.height/2);
-    sliderPosition.dy<heights*0.78 || sliderPosition.dy>heights*0.79? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
+    path.lineTo(sliderPosition.dy<heights*0.76 || sliderPosition.dy>heights*0.81?20:sliderPosition.dx-25, size.height/2);
+    sliderPosition.dy<heights*0.76 || sliderPosition.dy>heights*0.81? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
      path.cubicTo(sliderPosition.dx-20, 75, sliderPosition.dx+15, 75, sliderPosition.dx+25, size.height/2);
 
       
