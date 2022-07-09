@@ -2,7 +2,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:sania/app_bar.dart';
 import 'dart:math' as Math;
-import 'package:animated_rotation/animated_rotation.dart'  as AnimatedRotation ;
+
 
 import 'package:sania/body.dart';
 import 'package:sania/bottom_nav.dart';
@@ -48,28 +48,90 @@ class Slider extends StatefulWidget {
   State<Slider> createState() => _SliderState();
 }
 
-class _SliderState extends State<Slider> {
+class _SliderState extends State<Slider> with SingleTickerProviderStateMixin {
+   
+
+
+  late AnimationController _animationController;
+ late  Animation _sliderAnimation;
+
+ late double animBegin;
+ late double animENd;
+ bool originalpos=true;
+@override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+    animBegin=widget.ultimateHeight*0.78;
+    animENd=widget.ultimateHeight*0.78;
+     _dragPosition=Offset(widget.ultimateWidth*0.4,widget.ultimateHeight*0.78);
+    _dragPercentage=2.5;
+ _animationController=AnimationController(vsync: this,duration: Duration(milliseconds: 200));
+    _initAnimation();
+
+    _animationController.forward();
+  
+  }
+
+
+ void _initAnimation(){
+  _sliderAnimation=Tween(
+    begin: animBegin,
+    end: animENd
+  ) .animate(_animationController)..addListener(() {
+    setState(() {
+      
+    });
+  });
+ }
+
+
+  
    
   late  Offset _dragPosition;
   late  double _dragPercentage;
-    
+    bool isDragging=false;
     
 
    void _UpdateDragPosion(Offset val){
     double newDragPosition=0;
-    if(val.dx <= 20){
-      newDragPosition=20;
-    } else if(val.dx >= MediaQuery.of(context).size.width*0.8025){
-      newDragPosition=MediaQuery.of(context).size.width*0.8025;
+    if(val.dx <= widget.ultimateWidth*0.22){
+      newDragPosition=widget.ultimateWidth*0.22;
+    } else if(val.dx >= MediaQuery.of(context).size.width*0.90){
+      newDragPosition=MediaQuery.of(context).size.width*0.90;
     }else{
       newDragPosition=val.dx;
     }
 
     setState(() {
-      _dragPosition=ui.Offset(newDragPosition, 0) ;
-      _dragPercentage=newDragPosition/MediaQuery.of(context).size.width*0.75;
+      _dragPosition=Offset(newDragPosition, val.dy) ;
+      if(newDragPosition>widget.ultimateWidth*0.22 &&newDragPosition<widget.ultimateWidth*0.29){
+          _dragPercentage=0.5;
+      } else if(newDragPosition>widget.ultimateWidth*0.29 &&newDragPosition<widget.ultimateWidth*0.36){
+        _dragPercentage=1.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.36 &&newDragPosition<widget.ultimateWidth*0.43){
+        _dragPercentage=1.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.43 &&newDragPosition<widget.ultimateWidth*0.50){
+        _dragPercentage=2.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.50 &&newDragPosition<widget.ultimateWidth*0.57){
+        _dragPercentage=2.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.57 &&newDragPosition<widget.ultimateWidth*0.64){
+        _dragPercentage=3.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.64 &&newDragPosition<widget.ultimateWidth*0.71){
+        _dragPercentage=3.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.71 &&newDragPosition<widget.ultimateWidth*0.79){
+        _dragPercentage=4.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.79 &&newDragPosition<widget.ultimateWidth*0.86){
+        _dragPercentage=4.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.86 &&newDragPosition<widget.ultimateWidth*0.90){
+        _dragPercentage=5.0;
+      }
+      
     });
    }
+
+   
 
 
   void _onDragUpdate(BuildContext context, DragUpdateDetails update){
@@ -78,11 +140,20 @@ class _SliderState extends State<Slider> {
     
     _UpdateDragPosion(offset);
      setState(() {
-       _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
+        _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
          getRotation();
+           isDragging=true;
     });
+
   
 
+   
+     
+  
+  
+   
+    
+ 
   }
 
    void _onDragStart(BuildContext context, DragStartDetails start){
@@ -91,9 +162,30 @@ class _SliderState extends State<Slider> {
     _UpdateDragPosion(offset);
     setState(() { 
        _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
+       isDragging=true;
     });
    
-    
+       animBegin=widget.ultimateHeight *0.65;
+    animENd= widget.ultimateHeight *0.96;
+
+  
+    _initAnimation();
+  
+    TickerFuture tickerFuture = _animationController.repeat();
+     
+      
+    tickerFuture.timeout(Duration(milliseconds: 2000), onTimeout:  () {
+      _animationController.forward();
+      _animationController.reverse();
+     originalpos=false;
+      // _animationController.stop(canceled: true);
+   
+      
+            
+
+     
+    });
+originalpos=true;
   }
 // animation after end of drag
 // animation after end of drag
@@ -102,9 +194,17 @@ class _SliderState extends State<Slider> {
 
 
    void _onDragEnd(BuildContext context, DragEndDetails end){
+    
+
     setState(() {
       _dragPosition=Offset(widget.ultimateWidth*0.4, widget.ultimateHeight *0.78) ;
+      _dragPercentage=2.5;
+      isDragging=false;
+
+      
+   
     });
+   
    
   }
 
@@ -112,14 +212,6 @@ class _SliderState extends State<Slider> {
 // animation after end of drag
 // animation after end of drag
 // animation after end of drag
-@override
-  void initState() {
-    // TODO: implement initState
-
-    super.initState();
-     _dragPosition=Offset(widget.ultimateWidth*0.4,widget.ultimateHeight*0.78);
-    _dragPercentage=0;
-  }
 
   getRotation(){
   
@@ -147,7 +239,7 @@ class _SliderState extends State<Slider> {
 
     return angle;
   }
-
+ 
 //   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -171,6 +263,13 @@ class _SliderState extends State<Slider> {
             angle:getRotation() ,
              
            child: body())),
+             Positioned(
+          left: _dragPosition.dx + widget.ultimateWidth*0.10,
+          top: _dragPosition.dy-widget.ultimateHeight*0.024 ,
+          child: CircleAvatar(
+            radius: 17,
+            backgroundColor: Color(0XFFF2F2F2),
+            child:Image.asset('assets/images/emoji.png'),)),
      
         Positioned(
           top: widget.ultimateHeight*0.73,
@@ -200,8 +299,10 @@ class _SliderState extends State<Slider> {
               child: CustomPaint(
                 
                 painter: WavePainter(
+                  isDragging: isDragging,
                   heights: widget.ultimateHeight,
-                  sliderPosition: _dragPosition, 
+                  widths: widget.ultimateWidth,
+                  sliderPosition: isDragging? _dragPosition:Offset(_dragPosition.dx   ,originalpos ? _sliderAnimation.value:_dragPosition.dy), 
                   dragPercentage: _dragPercentage,
                   color: Color(0XFFF2F2F2),
                 
@@ -210,7 +311,8 @@ class _SliderState extends State<Slider> {
             ),
              onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdate(context, update),
             onHorizontalDragStart: (DragStartDetails start) => _onDragStart(context,start),
-            onHorizontalDragEnd: (DragEndDetails end)=> _onDragEnd(context , end)
+            onHorizontalDragEnd: (DragEndDetails end)=> _onDragEnd(context , end),
+            
           ),
         ),
         
@@ -219,12 +321,44 @@ class _SliderState extends State<Slider> {
           top: _dragPosition.dy-widget.ultimateHeight*0.045 ,
         // child: Text(_dragPosition.dy.toString()),)
          child: Text(_dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString())),
-          //  Positioned(
-          // left: _dragPosition.dx - 20,
-          // top: 20,
-          // child: CircleAvatar(
-          //   radius: 20,
-          //   child:Image.asset('assets/images/emoji.png'),)),
+         Positioned(
+           left: _dragPosition.dx + widget.ultimateWidth*0.06,
+          top: _dragPosition.dy-widget.ultimateHeight*0.020 ,
+           child: Row(
+         
+            children: [
+              Row(
+                children:  [
+                  Text('(',style: TextStyle(
+                    fontSize: 20,
+                    fontWeight:FontWeight.bold
+                  ),),
+                   Text('(',style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: ui.FontWeight.bold
+                   ),)
+                ],
+              ),
+         
+            const  SizedBox(
+                width: 40,
+              ),
+              
+               Row(
+                children:  [
+                  Text(')',style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: ui.FontWeight.bold
+                   ),),
+                   Text(')',style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: ui.FontWeight.bold
+                   ),)
+                ],
+              ),
+            ],
+           ),
+         )
      
       ],
     );
@@ -245,14 +379,22 @@ class WavePainter extends CustomPainter {
   final Offset sliderPosition;
   final double dragPercentage;
 
+
+
+  final bool isDragging;
+
   final Color color;
   
   final Paint circlePainter;
   final Paint linePianter;
   final double heights;
+  final double widths;
+  
 
   WavePainter( 
     {required this.sliderPosition,
+    required this.widths,
+    required this.isDragging,
     required this.heights,
     required this.dragPercentage, 
     required this.color}): circlePainter = Paint()
@@ -289,11 +431,12 @@ class WavePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _paintAnchor(canvas, size);
     _paintLine(canvas, size);
-    _smileyPaint(canvas, size);
-    _drowArc1(canvas, size);
-    _drowArc2(canvas, size);
-    _drowArc3(canvas, size);
-    _drowArc4(canvas, size);
+   
+    // _smileyPaint(canvas, size);
+    // _drowArc1(canvas, size);
+    // _drowArc2(canvas, size);
+    // _drowArc3(canvas, size);
+    // _drowArc4(canvas, size);
   }
 
   _paintAnchor(Canvas canvas , Size size){
@@ -302,17 +445,38 @@ class WavePainter extends CustomPainter {
   }
 
   _paintLine(Canvas canvas,Size size ){
-    
+    double x;
+    bool checkX; // to check weather the emoji is still in the slider
+    if (sliderPosition.dx<widths*0.11 || sliderPosition.dx>widths*0.72){
+      checkX=false;
+      x=widths*0.415;
+    }else {
+      if(isDragging){
+x=sliderPosition.dx-25;
+      }else{
+        x=sliderPosition.dx-13;
+      }
+      
+      checkX=true;
+    }
+    var y;
+     if(isDragging){
+      y=sliderPosition.dy<heights* 0.77;
+     }else{
+      y= sliderPosition.dy>heights*0.80;
+     }
+
     Path path=Path();
     path.moveTo(20, size.height/2);
-    path.lineTo(sliderPosition.dy<heights*0.76 || sliderPosition.dy>heights*0.81?20:sliderPosition.dx-25, size.height/2);
-    sliderPosition.dy<heights*0.76 || sliderPosition.dy>heights*0.81? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
-     path.cubicTo(sliderPosition.dx-20, 75, sliderPosition.dx+15, 75, sliderPosition.dx+25, size.height/2);
+    path.lineTo(sliderPosition.dy<heights*0.76 || y ?20:x, size.height/2);
+    sliderPosition.dy<heights*0.76  || y ? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
+   checkX && isDragging && sliderPosition.dy<heights*0.80? path.cubicTo(sliderPosition.dx-20, 75, sliderPosition.dx+15, 75, sliderPosition.dx+25, size.height/2):
 
       
-    path.lineTo(size.width-20, size.height/2);
+    sliderPosition.dy>heights*0.78? path.lineTo(size.width-20, size.height/2):
+     path.moveTo(sliderPosition.dx+13, size.height/2);
 
-   
+     path.lineTo(size.width-20, size.height/2);
     
     canvas.drawPath(path , linePianter);
   }
