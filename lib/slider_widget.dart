@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:sania/app_bar.dart';
 import 'dart:math' as Math;
 
@@ -48,12 +49,14 @@ class Slider extends StatefulWidget {
   State<Slider> createState() => _SliderState();
 }
 
-class _SliderState extends State<Slider> with SingleTickerProviderStateMixin {
+class _SliderState extends State<Slider> with TickerProviderStateMixin {
    
 
 
   late AnimationController _animationController;
+  late AnimationController _controller;
  late  Animation _sliderAnimation;
+ late var sequenceAnimation;
 
  late double animBegin;
  late double animENd;
@@ -67,6 +70,114 @@ class _SliderState extends State<Slider> with SingleTickerProviderStateMixin {
     animENd=widget.ultimateHeight*0.78;
      _dragPosition=Offset(widget.ultimateWidth*0.4,widget.ultimateHeight*0.78);
     _dragPercentage=2.5;
+      
+    _controller = AnimationController(vsync: this);
+    sequenceAnimation = SequenceAnimationBuilder()
+    .addAnimatable(
+      animatable: Tween(begin: 17.0,end: 40.0),
+      from: Duration(milliseconds: 0),
+      to: Duration(milliseconds:500),
+      tag: 'raduis'
+
+    ) .addAnimatable(
+      animatable: Tween(begin: 0.0,end: 0.3),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 500),
+      tag: 'angle'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.3,end: 0.0),
+      from: Duration(milliseconds:2000),
+      to: Duration(milliseconds: 2200),
+      tag: 'angle'
+
+    )
+   
+      .addAnimatable(
+      animatable: Tween(begin: 40.0,end: 0.0),
+      from: Duration(milliseconds:500),
+      to: Duration(milliseconds: 1000),
+      tag: 'raduis'
+
+    ).addAnimatable(animatable: Tween(begin:1.0,end: 0.0),
+     from: Duration(milliseconds: 0), 
+     to: Duration(milliseconds: 500),
+      tag: 'opacity')
+
+      .addAnimatable(animatable: Tween(begin:0.0,end: 1.0),
+     from: Duration(milliseconds: 2000), 
+     to: Duration(milliseconds: 2200),
+      tag: 'opacity')
+       .addAnimatable(
+      animatable: Tween(begin: 0.0,end: 17.0),
+      from: Duration(milliseconds:2000),
+      to: Duration(seconds: 2200),
+      tag: 'raduis'
+
+    ) .addAnimatable(
+      animatable: Tween(begin: 0.0415,end: 0.1),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 1500),
+      tag: 'number_height'
+
+    ) .addAnimatable(
+      animatable: Tween(begin: 0.1,end: 0.0415),
+      from: Duration(milliseconds:1500),
+      to: Duration(milliseconds: 1600),
+      tag: 'number_height'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.11,end: 0.18),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 300),
+      tag: 'number_width'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.18,end: 0.11),
+      from: Duration(milliseconds:300),
+      to: Duration(milliseconds: 600),
+      tag: 'number_width'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 0.11,end: 0.18),
+      from: Duration(milliseconds:600),
+      to: Duration(milliseconds: 1200),
+      tag: 'number_width'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.18,end: 0.11),
+      from: Duration(milliseconds:1200),
+      to: Duration(milliseconds: 1500),
+      tag: 'number_width'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 11.0,end:28.0),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 1500),
+      tag: 'font_size'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 1.0,end:0.0),
+      from: Duration(milliseconds:1200),
+      to: Duration(milliseconds: 1500),
+      tag: 'fontOpacity'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 28.0,end:11.0),
+      from: Duration(milliseconds:1500),
+      to: Duration(milliseconds: 1600),
+      tag: 'font_size'
+
+    )
+    
+    .animate(_controller);
+    
+
  _animationController=AnimationController(vsync: this,duration: Duration(milliseconds: 200));
     _initAnimation();
 
@@ -144,7 +255,7 @@ class _SliderState extends State<Slider> with SingleTickerProviderStateMixin {
          getRotation();
            isDragging=true;
     });
-
+ 
   
 
    
@@ -174,7 +285,7 @@ class _SliderState extends State<Slider> with SingleTickerProviderStateMixin {
     TickerFuture tickerFuture = _animationController.repeat();
      
       
-    tickerFuture.timeout(Duration(milliseconds: 2000), onTimeout:  () {
+    tickerFuture.timeout(Duration(milliseconds:2000), onTimeout:  () {
       _animationController.forward();
       _animationController.reverse();
      originalpos=false;
@@ -186,6 +297,116 @@ class _SliderState extends State<Slider> with SingleTickerProviderStateMixin {
      
     });
 originalpos=true;
+
+
+ _controller = AnimationController(vsync: this);
+    sequenceAnimation = SequenceAnimationBuilder()
+   .addAnimatable(
+      animatable: Tween(begin: 17.0,end: 40.0),
+      from: Duration(milliseconds: 0),
+      to: Duration(milliseconds:500),
+      tag: 'raduis'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 0.0,end: 0.3),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 500),
+      tag: 'angle'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 0.3,end: 0.0),
+      from: Duration(milliseconds:2000),
+      to: Duration(milliseconds: 2200),
+      tag: 'angle'
+
+    )
+   
+      .addAnimatable(
+      animatable: Tween(begin: 40.0,end: 17.0),
+      from: Duration(milliseconds:500),
+      to: Duration(milliseconds: 1000),
+      tag: 'raduis'
+
+    ).addAnimatable(animatable: Tween(begin:1.0,end: 0.0),
+     from: Duration(milliseconds: 0), 
+     to: Duration(milliseconds: 500),
+      tag: 'opacity')
+
+      .addAnimatable(animatable: Tween(begin:0.0,end: 1.0),
+     from: Duration(milliseconds: 2000), 
+     to: Duration(milliseconds: 2200),
+      tag: 'opacity')
+       .addAnimatable(
+      animatable: Tween(begin: 0.0,end: 17.0),
+      from: Duration(milliseconds:2000),
+      to: Duration(milliseconds: 2200),
+      tag: 'raduis'
+
+    ) .addAnimatable(
+      animatable: Tween(begin: 0.0415,end: 0.1),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 1500),
+      tag: 'number_height'
+
+    ) .addAnimatable(
+      animatable: Tween(begin: 0.1,end: 0.0415),
+      from: Duration(milliseconds:1500),
+      to: Duration(milliseconds: 1600),
+      tag: 'number_height'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.11,end: 0.18),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 300),
+      tag: 'number_width'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.18,end: 0.11),
+      from: Duration(milliseconds:300),
+      to: Duration(milliseconds: 600),
+      tag: 'number_width'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 0.11,end: 0.18),
+      from: Duration(milliseconds:600),
+      to: Duration(milliseconds: 1200),
+      tag: 'number_width'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.18,end: 0.11),
+      from: Duration(milliseconds:1200),
+      to: Duration(milliseconds: 1500),
+      tag: 'number_width'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 11.0,end:28.0),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 1500),
+      tag: 'font_size'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 1.0,end:0.0),
+      from: Duration(milliseconds:1200),
+      to: Duration(milliseconds: 1500),
+      tag: 'fontOpacity'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 28.0,end:11.0),
+      from: Duration(milliseconds:1500),
+      to: Duration(milliseconds: 1600),
+      tag: 'font_size'
+
+    )
+    .animate(_controller);
+
+    setState(() {
+      
+      GetContainerBack=true;
+    });
   }
 // animation after end of drag
 // animation after end of drag
@@ -194,17 +415,25 @@ originalpos=true;
 
 
    void _onDragEnd(BuildContext context, DragEndDetails end){
-    
+    setState(() {
+      isDragging=false;
+      GetContainerBack=false;
+    });
+    _controller.forward();
+Future.delayed(Duration(milliseconds:1500), () {
+  // Do something
 
     setState(() {
       _dragPosition=Offset(widget.ultimateWidth*0.4, widget.ultimateHeight *0.78) ;
       _dragPercentage=2.5;
-      isDragging=false;
+    
 
       
    
     });
-   
+    });
+    
+     
    
   }
 
@@ -212,10 +441,11 @@ originalpos=true;
 // animation after end of drag
 // animation after end of drag
 // animation after end of drag
-
+bool GetContainerBack=false;
   getRotation(){
+    double angle=0;
+  if(GetContainerBack){
   
-  double angle=0;
      if(_dragPosition.dy>widget.ultimateHeight*0.81 || _dragPosition.dy<widget.ultimateHeight*0.76 ){
      
       setState(() {
@@ -234,7 +464,7 @@ originalpos=true;
       });
      }
       
-   
+  }
     
 
     return angle;
@@ -256,8 +486,8 @@ originalpos=true;
           bottom: 0,
           child: Bottom_nav()),
         Positioned(
-         left: _dragPosition.dx - widget.ultimateWidth*0.415,
-         top: _dragPosition.dy - widget.ultimateHeight*0.72,
+         left:!GetContainerBack? widget.ultimateWidth*0.4- widget.ultimateWidth*0.415:_dragPosition.dx-widget.ultimateWidth*0.415,
+         top:!GetContainerBack? widget.ultimateHeight *0.78 - widget.ultimateHeight*0.72:_dragPosition.dy-widget.ultimateHeight*0.72,
          
           child: Transform.rotate(
             angle:getRotation() ,
@@ -266,10 +496,19 @@ originalpos=true;
              Positioned(
           left: _dragPosition.dx + widget.ultimateWidth*0.10,
           top: _dragPosition.dy-widget.ultimateHeight*0.024 ,
-          child: CircleAvatar(
-            radius: 17,
-            backgroundColor: Color(0XFFF2F2F2),
-            child:Image.asset('assets/images/emoji.png'),)),
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context,child){
+              return  Transform.rotate(
+                angle: sequenceAnimation['angle'].value,
+                child: CircleAvatar(
+                radius: sequenceAnimation['raduis'].value,
+                backgroundColor: Color(0XFFF2F2F2),
+                child:Image.asset('assets/images/emoji.png'),),
+              );
+            }
+            
+          )),
      
         Positioned(
           top: widget.ultimateHeight*0.73,
@@ -316,27 +555,51 @@ originalpos=true;
           ),
         ),
         
-         Positioned(
-          left: _dragPosition.dx + widget.ultimateWidth*0.11,
-          top: _dragPosition.dy-widget.ultimateHeight*0.045 ,
-        // child: Text(_dragPosition.dy.toString()),)
-         child: Text(_dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString())),
+         AnimatedBuilder(
+          animation: _controller,
+           builder: (context,child){
+              return Positioned(
+           left: _dragPosition.dx + widget.ultimateWidth*sequenceAnimation['number_width'].value,
+          top: _dragPosition.dy-widget.ultimateHeight*sequenceAnimation['number_height'].value,
+                 // child: Text(_dragPosition.dy.toString()),)
+           child: Text(
+            _dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString(),
+            style: TextStyle(
+              fontSize: sequenceAnimation['font_size'].value,
+             
+
+            ),
+            ),);
+   } ),
          Positioned(
            left: _dragPosition.dx + widget.ultimateWidth*0.06,
           top: _dragPosition.dy-widget.ultimateHeight*0.020 ,
-           child: Row(
+           child:AnimatedBuilder(
+            animation: _controller,
+            builder: (context,child){
+              return Row(
          
             children: [
               Row(
                 children:  [
-                  Text('(',style: TextStyle(
-                    fontSize: 20,
-                    fontWeight:FontWeight.bold
-                  ),),
-                   Text('(',style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: ui.FontWeight.bold
-                   ),)
+                  Opacity(
+                    opacity: sequenceAnimation['opacity'].value,
+                    child: Text('(',
+                    
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight:FontWeight.bold,
+                      
+                    ),),
+                  ),
+                   Opacity(
+                    opacity: sequenceAnimation['opacity'].value,
+
+                     child: Text('(',style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: ui.FontWeight.bold
+                     ),),
+                   )
                 ],
               ),
          
@@ -346,18 +609,27 @@ originalpos=true;
               
                Row(
                 children:  [
-                  Text(')',style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: ui.FontWeight.bold
-                   ),),
-                   Text(')',style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: ui.FontWeight.bold
-                   ),)
+                  Opacity(
+                    opacity: sequenceAnimation['opacity'].value,
+
+                    child: Text(')',style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: ui.FontWeight.bold
+                     ),),
+                  ),
+                   Opacity(
+                    opacity: sequenceAnimation['opacity'].value,
+
+                     child: Text(')',style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: ui.FontWeight.bold
+                     ),),
+                   )
                 ],
               ),
             ],
-           ),
+           );
+           })
          )
      
       ],
