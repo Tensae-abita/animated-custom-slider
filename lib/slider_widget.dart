@@ -116,13 +116,13 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
       tag: 'raduis'
 
     ) .addAnimatable(
-      animatable: Tween(begin: 0.0415,end: 0.1),
+      animatable: Tween(begin: 0.0415,end: 0.2),
       from: Duration(milliseconds:0),
       to: Duration(milliseconds: 1500),
       tag: 'number_height'
 
     ) .addAnimatable(
-      animatable: Tween(begin: 0.1,end: 0.0415),
+      animatable: Tween(begin: 0.2,end: 0.0415),
       from: Duration(milliseconds:1500),
       to: Duration(milliseconds: 1600),
       tag: 'number_height'
@@ -161,9 +161,22 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
       tag: 'font_size'
 
     ).addAnimatable(
-      animatable: Tween(begin: 1.0,end:0.0),
-      from: Duration(milliseconds:1200),
+      animatable: Tween(begin: 1.0,end:0.9),
+      from: Duration(milliseconds:0),
       to: Duration(milliseconds: 1500),
+      tag: 'fontOpacity'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 0.9,end:0.0),
+      from: Duration(milliseconds: 1500),
+      to: Duration(milliseconds: 2000),
+      tag: 'fontOpacity'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.0,end:1.0),
+      from: Duration(milliseconds:2000),
+      to: Duration(milliseconds: 2200),
       tag: 'fontOpacity'
 
     )
@@ -256,15 +269,6 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
            isDragging=true;
     });
  
-  
-
-   
-     
-  
-  
-   
-    
- 
   }
 
    void _onDragStart(BuildContext context, DragStartDetails start){
@@ -281,6 +285,8 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
 
   
     _initAnimation();
+      _animationController.forward();
+
   
     TickerFuture tickerFuture = _animationController.repeat();
      
@@ -289,12 +295,7 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
       _animationController.forward();
       _animationController.reverse();
      originalpos=false;
-      // _animationController.stop(canceled: true);
-   
-      
-            
-
-     
+      // _animationController.stop(canceled: true); 
     });
 originalpos=true;
 
@@ -388,9 +389,22 @@ originalpos=true;
       tag: 'font_size'
 
     ).addAnimatable(
-      animatable: Tween(begin: 1.0,end:0.0),
-      from: Duration(milliseconds:1200),
+      animatable: Tween(begin: 1.0,end:0.9),
+      from: Duration(milliseconds:0),
       to: Duration(milliseconds: 1500),
+      tag: 'fontOpacity'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 0.9,end:0.0),
+      from: Duration(milliseconds: 1500),
+      to: Duration(milliseconds: 2000),
+      tag: 'fontOpacity'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.0,end:1.0),
+      from: Duration(milliseconds:2000),
+      to: Duration(milliseconds: 2200),
       tag: 'fontOpacity'
 
     )
@@ -559,17 +573,20 @@ bool GetContainerBack=false;
           animation: _controller,
            builder: (context,child){
               return Positioned(
-           left: _dragPosition.dx + widget.ultimateWidth*sequenceAnimation['number_width'].value,
-          top: _dragPosition.dy-widget.ultimateHeight*sequenceAnimation['number_height'].value,
+                       left: _dragPosition.dx + widget.ultimateWidth*sequenceAnimation['number_width'].value,
+                      top: _dragPosition.dy-widget.ultimateHeight*sequenceAnimation['number_height'].value,
                  // child: Text(_dragPosition.dy.toString()),)
-           child: Text(
-            _dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString(),
-            style: TextStyle(
-              fontSize: sequenceAnimation['font_size'].value,
-             
-
-            ),
-            ),);
+                       child: Opacity(
+                        opacity: sequenceAnimation['fontOpacity'].value,
+                         child: Text(
+                          _dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString(),
+                          style: TextStyle(
+                                     fontSize: sequenceAnimation['font_size'].value,
+                           
+                                     
+                          ),
+                          ),
+                       ),);
    } ),
          Positioned(
            left: _dragPosition.dx + widget.ultimateWidth*0.06,
