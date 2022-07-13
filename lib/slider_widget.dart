@@ -61,6 +61,7 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
  late double animBegin;
  late double animENd;
  bool originalpos=true;
+ bool  doubletap=false;
 @override
   void initState() {
     // TODO: implement initState
@@ -71,127 +72,10 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
      _dragPosition=Offset(widget.ultimateWidth*0.4,widget.ultimateHeight*0.78);
     _dragPercentage=2.5;
       
-    _controller = AnimationController(vsync: this);
-    sequenceAnimation = SequenceAnimationBuilder()
-    .addAnimatable(
-      animatable: Tween(begin: 17.0,end: 40.0),
-      from: Duration(milliseconds: 0),
-      to: Duration(milliseconds:500),
-      tag: 'raduis'
-
-    ) .addAnimatable(
-      animatable: Tween(begin: 0.0,end: 0.3),
-      from: Duration(milliseconds:0),
-      to: Duration(milliseconds: 500),
-      tag: 'angle'
-
-    )
-    .addAnimatable(
-      animatable: Tween(begin: 0.3,end: 0.0),
-      from: Duration(milliseconds:2000),
-      to: Duration(milliseconds: 2200),
-      tag: 'angle'
-
-    )
-   
-      .addAnimatable(
-      animatable: Tween(begin: 40.0,end: 0.0),
-      from: Duration(milliseconds:500),
-      to: Duration(milliseconds: 1000),
-      tag: 'raduis'
-
-    ).addAnimatable(animatable: Tween(begin:1.0,end: 0.0),
-     from: Duration(milliseconds: 0), 
-     to: Duration(milliseconds: 500),
-      tag: 'opacity')
-
-      .addAnimatable(animatable: Tween(begin:0.0,end: 1.0),
-     from: Duration(milliseconds: 2000), 
-     to: Duration(milliseconds: 2200),
-      tag: 'opacity')
-       .addAnimatable(
-      animatable: Tween(begin: 0.0,end: 17.0),
-      from: Duration(milliseconds:2000),
-      to: Duration(seconds: 2200),
-      tag: 'raduis'
-
-    ) .addAnimatable(
-      animatable: Tween(begin: 0.0415,end: 0.2),
-      from: Duration(milliseconds:0),
-      to: Duration(milliseconds: 1500),
-      tag: 'number_height'
-
-    ) .addAnimatable(
-      animatable: Tween(begin: 0.2,end: 0.0415),
-      from: Duration(milliseconds:1500),
-      to: Duration(milliseconds: 1600),
-      tag: 'number_height'
-
-    )
-    .addAnimatable(
-      animatable: Tween(begin: 0.11,end: 0.18),
-      from: Duration(milliseconds:0),
-      to: Duration(milliseconds: 300),
-      tag: 'number_width'
-
-    )
-    .addAnimatable(
-      animatable: Tween(begin: 0.18,end: 0.11),
-      from: Duration(milliseconds:300),
-      to: Duration(milliseconds: 600),
-      tag: 'number_width'
-
-    ).addAnimatable(
-      animatable: Tween(begin: 0.11,end: 0.18),
-      from: Duration(milliseconds:600),
-      to: Duration(milliseconds: 1200),
-      tag: 'number_width'
-
-    )
-    .addAnimatable(
-      animatable: Tween(begin: 0.18,end: 0.11),
-      from: Duration(milliseconds:1200),
-      to: Duration(milliseconds: 1500),
-      tag: 'number_width'
-
-    ).addAnimatable(
-      animatable: Tween(begin: 11.0,end:28.0),
-      from: Duration(milliseconds:0),
-      to: Duration(milliseconds: 1500),
-      tag: 'font_size'
-
-    ).addAnimatable(
-      animatable: Tween(begin: 1.0,end:0.9),
-      from: Duration(milliseconds:0),
-      to: Duration(milliseconds: 1500),
-      tag: 'fontOpacity'
-
-    ).addAnimatable(
-      animatable: Tween(begin: 0.9,end:0.0),
-      from: Duration(milliseconds: 1500),
-      to: Duration(milliseconds: 2000),
-      tag: 'fontOpacity'
-
-    )
-    .addAnimatable(
-      animatable: Tween(begin: 0.0,end:1.0),
-      from: Duration(milliseconds:2000),
-      to: Duration(milliseconds: 2200),
-      tag: 'fontOpacity'
-
-    )
-    .addAnimatable(
-      animatable: Tween(begin: 28.0,end:11.0),
-      from: Duration(milliseconds:1500),
-      to: Duration(milliseconds: 1600),
-      tag: 'font_size'
-
-    )
-    
-    .animate(_controller);
+  _startStingAnimation();
     
 
- _animationController=AnimationController(vsync: this,duration: Duration(milliseconds: 200));
+ _animationController=AnimationController(vsync: this,duration: Duration(milliseconds: 80));
     _initAnimation();
 
     _animationController.forward();
@@ -209,98 +93,8 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
     });
   });
  }
-
-
-  
-   
-  late  Offset _dragPosition;
-  late  double _dragPercentage;
-    bool isDragging=false;
-    
-
-   void _UpdateDragPosion(Offset val){
-    double newDragPosition=0;
-    if(val.dx <= widget.ultimateWidth*0.22){
-      newDragPosition=widget.ultimateWidth*0.22;
-    } else if(val.dx >= MediaQuery.of(context).size.width*0.90){
-      newDragPosition=MediaQuery.of(context).size.width*0.90;
-    }else{
-      newDragPosition=val.dx;
-    }
-
-    setState(() {
-      _dragPosition=Offset(newDragPosition, val.dy) ;
-      if(newDragPosition>widget.ultimateWidth*0.22 &&newDragPosition<widget.ultimateWidth*0.29){
-          _dragPercentage=0.5;
-      } else if(newDragPosition>widget.ultimateWidth*0.29 &&newDragPosition<widget.ultimateWidth*0.36){
-        _dragPercentage=1.0;
-      }else if(newDragPosition>widget.ultimateWidth*0.36 &&newDragPosition<widget.ultimateWidth*0.43){
-        _dragPercentage=1.5;
-      }else if(newDragPosition>widget.ultimateWidth*0.43 &&newDragPosition<widget.ultimateWidth*0.50){
-        _dragPercentage=2.0;
-      }else if(newDragPosition>widget.ultimateWidth*0.50 &&newDragPosition<widget.ultimateWidth*0.57){
-        _dragPercentage=2.5;
-      }else if(newDragPosition>widget.ultimateWidth*0.57 &&newDragPosition<widget.ultimateWidth*0.64){
-        _dragPercentage=3.0;
-      }else if(newDragPosition>widget.ultimateWidth*0.64 &&newDragPosition<widget.ultimateWidth*0.71){
-        _dragPercentage=3.5;
-      }else if(newDragPosition>widget.ultimateWidth*0.71 &&newDragPosition<widget.ultimateWidth*0.79){
-        _dragPercentage=4.0;
-      }else if(newDragPosition>widget.ultimateWidth*0.79 &&newDragPosition<widget.ultimateWidth*0.86){
-        _dragPercentage=4.5;
-      }else if(newDragPosition>widget.ultimateWidth*0.86 &&newDragPosition<widget.ultimateWidth*0.90){
-        _dragPercentage=5.0;
-      }
-      
-    });
-   }
-
-   
-
-
-  void _onDragUpdate(BuildContext context, DragUpdateDetails update){
-    RenderBox? box= context.findRenderObject() as RenderBox?;
-    Offset offset= box!.globalToLocal(update.globalPosition);
-    
-    _UpdateDragPosion(offset);
-     setState(() {
-        _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
-         getRotation();
-           isDragging=true;
-    });
- 
-  }
-
-   void _onDragStart(BuildContext context, DragStartDetails start){
-    RenderBox? box= context.findRenderObject() as RenderBox?;
-    Offset offset= box!.globalToLocal(start.globalPosition);
-    _UpdateDragPosion(offset);
-    setState(() { 
-       _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
-       isDragging=true;
-    });
-   
-       animBegin=widget.ultimateHeight *0.65;
-    animENd= widget.ultimateHeight *0.96;
-
-  
-    _initAnimation();
-      _animationController.forward();
-
-  
-    TickerFuture tickerFuture = _animationController.repeat();
-     
-      
-    tickerFuture.timeout(Duration(milliseconds:2000), onTimeout:  () {
-      _animationController.forward();
-      _animationController.reverse();
-     originalpos=false;
-      // _animationController.stop(canceled: true); 
-    });
-originalpos=true;
-
-
- _controller = AnimationController(vsync: this);
+void _startStingAnimation(){
+   _controller = AnimationController(vsync: this);
     sequenceAnimation = SequenceAnimationBuilder()
    .addAnimatable(
       animatable: Tween(begin: 17.0,end: 40.0),
@@ -344,7 +138,7 @@ originalpos=true;
       tag: 'raduis'
 
     ) .addAnimatable(
-      animatable: Tween(begin: 0.0415,end: 0.1),
+      animatable: Tween(begin: 0.0415,end: 0.16),
       from: Duration(milliseconds:0),
       to: Duration(milliseconds: 1500),
       tag: 'number_height'
@@ -416,6 +210,81 @@ originalpos=true;
 
     )
     .animate(_controller);
+}
+
+  
+   
+  late  Offset _dragPosition;
+  late  double _dragPercentage;
+    bool isDragging=false;
+    
+
+   void _UpdateDragPosion(Offset val){
+    double newDragPosition=0;
+    if(val.dx <= widget.ultimateWidth*0.22){
+      newDragPosition=widget.ultimateWidth*0.22;
+    } else if(val.dx >= MediaQuery.of(context).size.width*0.90){
+      newDragPosition=MediaQuery.of(context).size.width*0.90;
+    }else{
+      newDragPosition=val.dx;
+    }
+
+    setState(() {
+      _dragPosition=Offset(newDragPosition, val.dy) ;
+      if(newDragPosition>widget.ultimateWidth*0.22 &&newDragPosition<widget.ultimateWidth*0.29){
+          _dragPercentage=0.5;
+      } else if(newDragPosition>widget.ultimateWidth*0.29 &&newDragPosition<widget.ultimateWidth*0.36){
+        _dragPercentage=1.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.36 &&newDragPosition<widget.ultimateWidth*0.43){
+        _dragPercentage=1.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.43 &&newDragPosition<widget.ultimateWidth*0.50){
+        _dragPercentage=2.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.50 &&newDragPosition<widget.ultimateWidth*0.57){
+        _dragPercentage=2.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.57 &&newDragPosition<widget.ultimateWidth*0.64){
+        _dragPercentage=3.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.64 &&newDragPosition<widget.ultimateWidth*0.71){
+        _dragPercentage=3.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.71 &&newDragPosition<widget.ultimateWidth*0.79){
+        _dragPercentage=4.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.79 &&newDragPosition<widget.ultimateWidth*0.86){
+        _dragPercentage=4.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.86 &&newDragPosition<widget.ultimateWidth*0.90){
+        _dragPercentage=5.0;
+      }
+      
+    });
+   }
+
+   
+
+
+  void _onDragUpdate(BuildContext context, DragUpdateDetails update){
+    RenderBox? box= context.findRenderObject() as RenderBox?;
+    Offset offset= box!.globalToLocal(update.globalPosition);
+    
+    _UpdateDragPosion(offset);
+     setState(() {
+        _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
+         getRotation();
+           isDragging=true;
+    });
+ 
+  }
+
+   void _onDragStart(BuildContext context, DragStartDetails start){
+    RenderBox? box= context.findRenderObject() as RenderBox?;
+    Offset offset= box!.globalToLocal(start.globalPosition);
+    _UpdateDragPosion(offset);
+    setState(() { 
+       _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, offset.dy);
+       isDragging=true;
+    });
+   
+      
+
+
+
 
     setState(() {
       
@@ -429,6 +298,20 @@ originalpos=true;
 
 
    void _onDragEnd(BuildContext context, DragEndDetails end){
+     animBegin=widget.ultimateHeight *0.65;
+    animENd= widget.ultimateHeight *0.96;
+    _startStingAnimation();
+  
+    _initAnimation();
+      _animationController.forward();
+    
+    TickerFuture tickerFuture = _animationController.repeat();
+    tickerFuture.timeout(Duration(milliseconds:1600), onTimeout:  () {
+      
+     originalpos=false;
+      // _animationController.stop(canceled: true); 
+    });
+originalpos=true;
     setState(() {
       isDragging=false;
       GetContainerBack=false;
@@ -483,7 +366,166 @@ bool GetContainerBack=false;
 
     return angle;
   }
+ void _onDragUpdateContainer(BuildContext context, DragUpdateDetails update){
+    RenderBox? box= context.findRenderObject() as RenderBox?;
+    Offset offset= box!.globalToLocal(update.globalPosition);
+    
+    _UpdateDragPosion(offset);
+     setState(() {
+        _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155,  widget.ultimateHeight *0.78);
+         getRotation();
+           isDragging=true;
+    });
  
+  }
+
+  void _onDragStartContianer(BuildContext context, DragStartDetails start){
+    RenderBox? box= context.findRenderObject() as RenderBox?;
+    Offset offset= box!.globalToLocal(start.globalPosition);
+    _UpdateDragPosion(offset);
+    if(doubletap==false){
+ setState(() { 
+       _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, widget.ultimateHeight *0.78);
+       isDragging=true;
+    });
+ setState(() {
+      
+      GetContainerBack=true;
+    });
+    }
+   
+  }
+ 
+ 
+   void _onDragEndContainer(BuildContext context, DragEndDetails end){
+    if(doubletap==false){
+ animBegin=widget.ultimateHeight *0.65;
+    animENd= widget.ultimateHeight *0.96;
+    _startStingAnimation();
+  
+    _initAnimation();
+      _animationController.forward();
+    
+    TickerFuture tickerFuture = _animationController.repeat();
+    tickerFuture.timeout(Duration(milliseconds:1600), onTimeout:  () {
+      
+     originalpos=false;
+      // _animationController.stop(canceled: true); 
+    });
+originalpos=true;
+    setState(() {
+      isDragging=false;
+      GetContainerBack=false;
+    });
+    _controller.forward();
+Future.delayed(Duration(milliseconds:1500), () {
+  // Do something
+
+    setState(() {
+      _dragPosition=Offset(widget.ultimateWidth*0.4, widget.ultimateHeight *0.78) ;
+      _dragPercentage=2.5;
+    
+    });
+    });
+    }
+    
+    
+     
+   
+  }
+
+  void _onDoubleTapContainer(){
+     doubletap=true;
+
+      animBegin=widget.ultimateHeight *0.65;
+    animENd= widget.ultimateHeight *0.96;
+    _startStingAnimation();
+  
+    _initAnimation();
+      _animationController.forward();
+    
+    TickerFuture tickerFuture = _animationController.repeat();
+    tickerFuture.timeout(Duration(milliseconds:1600), onTimeout:  () {
+      
+     originalpos=false;
+      // _animationController.stop(canceled: true); 
+    });
+originalpos=true;
+    setState(() {
+      isDragging=false;
+      GetContainerBack=false;
+    });
+    _controller.forward();
+
+    setState(() {
+        _dragPosition=Offset(_doubleTapDetails.localPosition.dx -widget.ultimateWidth*0.155,  widget.ultimateHeight *0.78);
+        
+    });
+
+Future.delayed(Duration(milliseconds:1500), () {
+  // Do something
+
+    setState(() {
+      _dragPosition=Offset(widget.ultimateWidth*0.4, widget.ultimateHeight *0.78) ;
+      _dragPercentage=2.5;
+      doubletap=false;
+    
+    });
+    });
+    
+  }
+  // get taped place 
+          late TapDownDetails _doubleTapDetails;
+
+        void _handleDoubleTapDown(TapDownDetails details) {
+          _doubleTapDetails = details;
+         
+        }
+
+   // get taped place 
+
+// void onTapContainer(){
+//    doubletap=true;
+
+//       animBegin=widget.ultimateHeight *0.65;
+//     animENd= widget.ultimateHeight *0.96;
+//     _startStingAnimation();
+  
+//     _initAnimation();
+//       _animationController.forward();
+    
+//     TickerFuture tickerFuture = _animationController.repeat();
+//     tickerFuture.timeout(Duration(milliseconds:1600), onTimeout:  () {
+      
+//      originalpos=false;
+//       // _animationController.stop(canceled: true); 
+//     });
+// originalpos=true;
+//     setState(() {
+//       isDragging=false;
+//       GetContainerBack=false;
+//     });
+//     _controller.forward();
+
+//     setState(() {
+//         _dragPosition=Offset(_doubleTapDetails.localPosition.dx -widget.ultimateWidth*0.155,  widget.ultimateHeight *0.78);
+        
+//     });
+
+// Future.delayed(Duration(milliseconds:1500), () {
+//   // Do something
+
+//     setState(() {
+//       _dragPosition=Offset(widget.ultimateWidth*0.4, widget.ultimateHeight *0.78) ;
+//       _dragPercentage=2.5;
+//       doubletap=false;
+    
+//     });
+//     });
+    
+    
+// }
+
 //   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -507,6 +549,27 @@ bool GetContainerBack=false;
             angle:getRotation() ,
              
            child: body())),
+           Positioned(
+            top: widget.ultimateHeight*0.06,
+
+            
+             child: GestureDetector(
+               child: Opacity(
+                opacity: 0.0,
+                 child: Container(
+                  height: widget.ultimateHeight*0.66,
+                  width: widget.ultimateWidth,
+                  color: Colors.blue,
+                 ),
+               ),
+               onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdateContainer(context, update),
+               onHorizontalDragStart: (DragStartDetails start) => _onDragStartContianer(context,start),
+               onHorizontalDragEnd: (DragEndDetails end)=> _onDragEndContainer(context , end),
+               onDoubleTap: ()=>_onDoubleTapContainer(),
+               onDoubleTapDown: _handleDoubleTapDown,
+              //  onTap: ()=>onTapContainer(),
+             ),
+           ),
              Positioned(
           left: _dragPosition.dx + widget.ultimateWidth*0.10,
           top: _dragPosition.dy-widget.ultimateHeight*0.024 ,
@@ -741,25 +804,21 @@ class WavePainter extends CustomPainter {
       x=widths*0.415;
     }else {
       if(isDragging){
-x=sliderPosition.dx-25;
+       x=sliderPosition.dx-25;
       }else{
         x=sliderPosition.dx-13;
       }
       
       checkX=true;
     }
-    var y;
-     if(isDragging){
-      y=sliderPosition.dy<heights* 0.77;
-     }else{
-      y= sliderPosition.dy>heights*0.80;
-     }
 
+  
+    
     Path path=Path();
     path.moveTo(20, size.height/2);
-    path.lineTo(sliderPosition.dy<heights*0.76 || y ?20:x, size.height/2);
-    sliderPosition.dy<heights*0.76  || y ? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
-   checkX && isDragging && sliderPosition.dy<heights*0.80? path.cubicTo(sliderPosition.dx-20, 75, sliderPosition.dx+15, 75, sliderPosition.dx+25, size.height/2):
+    path.lineTo(sliderPosition.dy<heights*0.76 || sliderPosition.dy>heights*0.80 ?20:x, size.height/2);
+    sliderPosition.dy<heights*0.76  || sliderPosition.dy>heights*0.80 ? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
+   checkX && isDragging  && sliderPosition.dy<heights*0.80 ? path.cubicTo(sliderPosition.dx-20, 75, sliderPosition.dx+15, 75, sliderPosition.dx+25, size.height/2):
 
       
     sliderPosition.dy>heights*0.78? path.lineTo(size.width-20, size.height/2):
