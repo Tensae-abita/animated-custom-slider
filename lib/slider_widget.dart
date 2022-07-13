@@ -93,6 +93,125 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
     });
   });
  }
+   void _animationOnTap(){
+    _controller = AnimationController(vsync: this);
+    sequenceAnimation = SequenceAnimationBuilder()
+
+    .addAnimatable(
+      animatable: Tween(begin: 17.0,end: 15.0),
+      from: Duration(milliseconds: 0),
+      to: Duration(milliseconds:500),
+      tag: 'raduis'
+
+    ).addAnimatable(  
+      animatable: Tween(begin: 0.0,end: 0.0),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 500),
+      tag: 'angle'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 0.0,end: 0.0),
+      from: Duration(milliseconds:2000),
+      to: Duration(milliseconds: 2200),
+      tag: 'angle'
+
+    )
+   
+      .addAnimatable(
+      animatable: Tween(begin: 15.0,end: 17.0),
+      from: Duration(milliseconds:500),
+      to: Duration(milliseconds: 1000),
+      tag: 'raduis'
+
+    ).addAnimatable(animatable: Tween(begin:1.0,end: 1.0),
+     from: Duration(milliseconds: 0), 
+     to: Duration(milliseconds: 500),
+      tag: 'opacity')
+
+      .addAnimatable(animatable: Tween(begin:1.0,end: 1.0),
+     from: Duration(milliseconds: 2000), 
+     to: Duration(milliseconds: 2200),
+      tag: 'opacity')
+       .addAnimatable(
+      animatable: Tween(begin: 17.0,end: 17.0),
+      from: Duration(milliseconds:2000),
+      to: Duration(milliseconds: 2200),
+      tag: 'raduis'
+
+    ) .addAnimatable(
+      animatable: Tween(begin: 0.0415,end: 0.16),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 1500),
+      tag: 'number_height'
+
+    ) .addAnimatable(
+      animatable: Tween(begin: 0.1,end: 0.0415),
+      from: Duration(milliseconds:1500),
+      to: Duration(milliseconds: 1600),
+      tag: 'number_height'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.11,end: 0.18),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 300),
+      tag: 'number_width'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.18,end: 0.11),
+      from: Duration(milliseconds:300),
+      to: Duration(milliseconds: 600),
+      tag: 'number_width'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 0.11,end: 0.18),
+      from: Duration(milliseconds:600),
+      to: Duration(milliseconds: 1200),
+      tag: 'number_width'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.18,end: 0.11),
+      from: Duration(milliseconds:1200),
+      to: Duration(milliseconds: 1500),
+      tag: 'number_width'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 11.0,end:28.0),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 1500),
+      tag: 'font_size'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 1.0,end:0.9),
+      from: Duration(milliseconds:0),
+      to: Duration(milliseconds: 1500),
+      tag: 'fontOpacity'
+
+    ).addAnimatable(
+      animatable: Tween(begin: 0.9,end:0.0),
+      from: Duration(milliseconds: 1500),
+      to: Duration(milliseconds: 2000),
+      tag: 'fontOpacity'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 0.0,end:1.0),
+      from: Duration(milliseconds:2000),
+      to: Duration(milliseconds: 2200),
+      tag: 'fontOpacity'
+
+    )
+    .addAnimatable(
+      animatable: Tween(begin: 28.0,end:11.0),
+      from: Duration(milliseconds:1500),
+      to: Duration(milliseconds: 1600),
+      tag: 'font_size'
+
+    ).animate(_controller);
+
+   }
 void _startStingAnimation(){
    _controller = AnimationController(vsync: this);
     sequenceAnimation = SequenceAnimationBuilder()
@@ -481,52 +600,43 @@ Future.delayed(Duration(milliseconds:1500), () {
           _doubleTapDetails = details;
          
         }
+         late TapUpDetails _singleTapDetails;
+        void _onTapUp(TapUpDetails details){
+         _singleTapDetails= details;
+        }
 
    // get taped place 
 
-// void onTapContainer(){
-//    doubletap=true;
+void onTapContainer(){
+   doubletap=true;
 
-//       animBegin=widget.ultimateHeight *0.65;
-//     animENd= widget.ultimateHeight *0.96;
-//     _startStingAnimation();
+     if(doubletap==true){
+
+_animationOnTap();
   
-//     _initAnimation();
-//       _animationController.forward();
     
-//     TickerFuture tickerFuture = _animationController.repeat();
-//     tickerFuture.timeout(Duration(milliseconds:1600), onTimeout:  () {
-      
-//      originalpos=false;
-//       // _animationController.stop(canceled: true); 
-//     });
-// originalpos=true;
-//     setState(() {
-//       isDragging=false;
-//       GetContainerBack=false;
-//     });
-//     _controller.forward();
-
-//     setState(() {
-//         _dragPosition=Offset(_doubleTapDetails.localPosition.dx -widget.ultimateWidth*0.155,  widget.ultimateHeight *0.78);
+    _controller.forward();
+setState(() {
+        _dragPosition=Offset(_singleTapDetails.localPosition.dx -widget.ultimateWidth*0.155,  widget.ultimateHeight *0.78);
         
-//     });
+    });
+    Future.delayed(Duration(milliseconds:1500), () {
+  // Do something
 
-// Future.delayed(Duration(milliseconds:1500), () {
-//   // Do something
+    setState(() {
+      _dragPosition=Offset(widget.ultimateWidth*0.4, widget.ultimateHeight *0.78) ;
+      _dragPercentage=2.5;
+      doubletap=false;
+    
+    });
+    });
 
-//     setState(() {
-//       _dragPosition=Offset(widget.ultimateWidth*0.4, widget.ultimateHeight *0.78) ;
-//       _dragPercentage=2.5;
-//       doubletap=false;
     
-//     });
-//     });
+     } 
     
-    
-// }
+}
 
-//   @override
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -567,7 +677,8 @@ Future.delayed(Duration(milliseconds:1500), () {
                onHorizontalDragEnd: (DragEndDetails end)=> _onDragEndContainer(context , end),
                onDoubleTap: ()=>_onDoubleTapContainer(),
                onDoubleTapDown: _handleDoubleTapDown,
-              //  onTap: ()=>onTapContainer(),
+               onTapUp: (TapUpDetails details) => _onTapUp(details),
+               onTap: ()=>onTapContainer(),
              ),
            ),
              Positioned(
@@ -597,21 +708,7 @@ Future.delayed(Duration(milliseconds:1500), () {
 
               width:widget.ultimateWidth*0.82,
               
-              //       decoration: BoxDecoration(
-              //     gradient:LinearGradient(
-              //         colors: [
-              //         Colors.redAccent, 
-              //         Colors.orangeAccent,
-              //         Colors.blue,
-              //         Colors.green
-              //         //add more colors for gradient
-              //         ],
-              //         begin: Alignment.topLeft, //begin of the gradient color
-              //         end: Alignment.bottomRight, //end of the gradient color
-              //         stops: [0, 0.2, 0.5, 0.8] //stops for individual color
-              //         //set the stops number equal to numbers of color
-              //     ),
-              // ),
+             
               child: CustomPaint(
                 
                 painter: WavePainter(
@@ -811,18 +908,24 @@ class WavePainter extends CustomPainter {
       
       checkX=true;
     }
-
+    double line;
+    if (sliderPosition.dx<widths*0.11 || sliderPosition.dx>widths*0.72){
+      line=widths*0.415;
+    }else{
+      line=sliderPosition.dx+13;
+    }
+   
   
     
     Path path=Path();
     path.moveTo(20, size.height/2);
     path.lineTo(sliderPosition.dy<heights*0.76 || sliderPosition.dy>heights*0.80 ?20:x, size.height/2);
     sliderPosition.dy<heights*0.76  || sliderPosition.dy>heights*0.80 ? path.quadraticBezierTo(sliderPosition.dx, sliderPosition.dy-heights*0.77, size.width-20,  size.height/2):
-   checkX && isDragging  && sliderPosition.dy<heights*0.80 ? path.cubicTo(sliderPosition.dx-20, 75, sliderPosition.dx+15, 75, sliderPosition.dx+25, size.height/2):
+    checkX && isDragging  && sliderPosition.dy<heights*0.80 ? path.cubicTo(sliderPosition.dx-20, 75, sliderPosition.dx+15, 75, sliderPosition.dx+25, size.height/2):
 
       
     sliderPosition.dy>heights*0.78? path.lineTo(size.width-20, size.height/2):
-     path.moveTo(sliderPosition.dx+13, size.height/2);
+     path.moveTo(line, size.height/2);
 
      path.lineTo(size.width-20, size.height/2);
     
