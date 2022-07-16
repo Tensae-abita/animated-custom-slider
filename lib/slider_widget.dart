@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:sania/app_bar.dart';
@@ -75,7 +76,7 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
   _startStingAnimation();
     
 
- _animationController=AnimationController(vsync: this,duration: Duration(milliseconds: 80));
+ _animationController=AnimationController(vsync: this,duration: Duration(milliseconds: 1));
     _initAnimation();
 
     _animationController.forward();
@@ -327,7 +328,7 @@ void _startStingAnimation(){
       to: Duration(milliseconds: 1600),
       tag: 'font_size'
 
-    )
+      )
     .animate(_controller);
 }
 
@@ -417,8 +418,8 @@ void _startStingAnimation(){
 
 
    void _onDragEnd(BuildContext context, DragEndDetails end){
-     animBegin=widget.ultimateHeight *0.65;
-    animENd= widget.ultimateHeight *0.96;
+     animBegin=widget.ultimateHeight *0.66;
+    animENd= widget.ultimateHeight *0.95;
     _startStingAnimation();
   
     _initAnimation();
@@ -452,7 +453,48 @@ Future.delayed(Duration(milliseconds:1500), () {
      
    
   }
+_onDoubleTap(){
+    doubletap=true;
+     if(doubletap){
 
+     
+    _UpdateDragPosion(_doubleTapDetails.localPosition);
+      animBegin=widget.ultimateHeight *0.65;
+    animENd= widget.ultimateHeight *0.96;
+    _startStingAnimation();
+  
+    _initAnimation();
+      _animationController.forward();
+    
+    TickerFuture tickerFuture = _animationController.repeat();
+    tickerFuture.timeout(Duration(milliseconds:1600), onTimeout:  () {
+      
+     originalpos=false;
+      // _animationController.stop(canceled: true); 
+    });
+originalpos=true;
+    setState(() {
+      isDragging=false;
+      GetContainerBack=false;
+    });
+    _controller.forward();
+
+    setState(() {
+        _dragPosition=Offset(_doubleTapDetails.localPosition.dx ,  widget.ultimateHeight *0.78);
+        
+    });
+
+Future.delayed(Duration(milliseconds:1500), () {
+  // Do something
+
+    setState(() {
+      _dragPosition=Offset(widget.ultimateWidth*0.4, widget.ultimateHeight *0.78) ;
+      _dragPercentage=2.5;
+      doubletap=false;
+    
+    });
+    });}
+}
   // animation after end of drag
 // animation after end of drag
 // animation after end of drag
@@ -488,14 +530,15 @@ bool GetContainerBack=false;
  void _onDragUpdateContainer(BuildContext context, DragUpdateDetails update){
     RenderBox? box= context.findRenderObject() as RenderBox?;
     Offset offset= box!.globalToLocal(update.globalPosition);
-    
+      
     _UpdateDragPosion(offset);
      setState(() {
         _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155,  widget.ultimateHeight *0.78);
          getRotation();
            isDragging=true;
+         
     });
- 
+   
   }
 
   void _onDragStartContianer(BuildContext context, DragStartDetails start){
@@ -555,7 +598,10 @@ Future.delayed(Duration(milliseconds:1500), () {
 
   void _onDoubleTapContainer(){
      doubletap=true;
+     if(doubletap){
 
+     
+    _UpdateDragPosion(_doubleTapDetails.localPosition);
       animBegin=widget.ultimateHeight *0.65;
     animENd= widget.ultimateHeight *0.96;
     _startStingAnimation();
@@ -590,7 +636,7 @@ Future.delayed(Duration(milliseconds:1500), () {
       doubletap=false;
     
     });
-    });
+    });}
     
   }
   // get taped place 
@@ -607,8 +653,15 @@ Future.delayed(Duration(milliseconds:1500), () {
 
    // get taped place 
 
-void onTapContainer(){
-   doubletap=true;
+
+
+late var LongPress;
+
+
+_onlongPressEnd(LongPressEndDetails details){
+
+_UpdateDragPosion(details.localPosition);
+ doubletap=true;
 
      if(doubletap==true){
 
@@ -617,7 +670,7 @@ _animationOnTap();
     
     _controller.forward();
 setState(() {
-        _dragPosition=Offset(_singleTapDetails.localPosition.dx -widget.ultimateWidth*0.155,  widget.ultimateHeight *0.78);
+        _dragPosition=Offset(details.localPosition.dx -widget.ultimateWidth*0.155,  widget.ultimateHeight *0.78);
         
     });
     Future.delayed(Duration(milliseconds:1500), () {
@@ -633,9 +686,18 @@ setState(() {
 
     
      } 
-    
 }
 
+_onLongpressUpdate(LongPressMoveUpdateDetails details){
+ 
+_UpdateDragPosion(details.localPosition);
+
+    setState(() {
+        _dragPosition=Offset(details.localPosition.dx -widget.ultimateWidth*0.155, widget.ultimateHeight *0.78);
+         getRotation();
+           
+    });
+}
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -651,6 +713,37 @@ setState(() {
          
           bottom: 0,
           child: Bottom_nav()),
+          Positioned(
+             left:widget.ultimateWidth*0.415 - widget.ultimateWidth*0.415,
+         top: widget.ultimateHeight *0.78 - widget.ultimateHeight*0.72,
+         
+            child: Container(
+              
+                height: MediaQuery.of(context).size.height*0.83,
+                  width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  
+                  padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 20),
+                  child: Container(
+                 
+                  
+                   decoration: BoxDecoration(
+            
+            borderRadius: BorderRadius.circular(20),
+            color:Colors.grey[100],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 8,
+                 spreadRadius: 3,
+                offset: Offset(0, 1),
+                
+              )
+            ],
+            
+                   )),)),
+          ),
+          
         Positioned(
          left:!GetContainerBack? widget.ultimateWidth*0.4- widget.ultimateWidth*0.415:_dragPosition.dx-widget.ultimateWidth*0.415,
          top:!GetContainerBack? widget.ultimateHeight *0.78 - widget.ultimateHeight*0.72:_dragPosition.dy-widget.ultimateHeight*0.72,
@@ -678,7 +771,8 @@ setState(() {
                onDoubleTap: ()=>_onDoubleTapContainer(),
                onDoubleTapDown: _handleDoubleTapDown,
                onTapUp: (TapUpDetails details) => _onTapUp(details),
-               onTap: ()=>onTapContainer(),
+               onLongPressEnd: (LongPressEndDetails longpressend)=>_onlongPressEnd(longpressend),
+               onLongPressMoveUpdate: (LongPressMoveUpdateDetails move)=>_onLongpressUpdate(move),
              ),
            ),
              Positioned(
@@ -725,6 +819,8 @@ setState(() {
              onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdate(context, update),
             onHorizontalDragStart: (DragStartDetails start) => _onDragStart(context,start),
             onHorizontalDragEnd: (DragEndDetails end)=> _onDragEnd(context , end),
+             onDoubleTap: ()=>_onDoubleTap(),
+               onDoubleTapDown: _handleDoubleTapDown,
             
           ),
         ),
@@ -742,6 +838,7 @@ setState(() {
                           _dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString(),
                           style: TextStyle(
                                      fontSize: sequenceAnimation['font_size'].value,
+                                     color: Colors.grey[900]
                            
                                      
                           ),
@@ -932,81 +1029,81 @@ class WavePainter extends CustomPainter {
     canvas.drawPath(path , linePianter);
   }
 
-   _smileyPaint(Canvas canvas, Size size) {
-    final radius = Math.min(size.width, size.height) / 5;
-    var center = Offset(sliderPosition.dx , sliderPosition.dy-heights*0.73) ;
+//    _smileyPaint(Canvas canvas, Size size) {
+//     final radius = Math.min(size.width, size.height) / 5;
+//     var center = Offset(sliderPosition.dx , sliderPosition.dy-heights*0.73) ;
 
-    // canvas.drawRect(center,Paint());
-    canvas.drawCircle(center, radius, Paint());
-    // Draw the body
-    final paint = Paint()..color = Colors.yellow;
-    canvas.drawCircle(center, radius, paint);
-    // Draw the mouth
-    final smilePaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius / 3), 0,
-        Math.pi, false, smilePaint);
-    // Draw the eyes
-    canvas.drawCircle(
-        Offset(center.dx - radius / 2, center.dy - radius / 2), 3, Paint());
-    canvas.drawCircle(
-        Offset(center.dx + radius / 2, center.dy - radius / 2), 3, Paint());
-  }
+//     // canvas.drawRect(center,Paint());
+//     canvas.drawCircle(center, radius, Paint());
+//     // Draw the body
+//     final paint = Paint()..color = Colors.yellow;
+//     canvas.drawCircle(center, radius, paint);
+//     // Draw the mouth
+//     final smilePaint = Paint()
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3;
+//     canvas.drawArc(Rect.fromCircle(center: center, radius: radius / 3), 0,
+//         Math.pi, false, smilePaint);
+//     // Draw the eyes
+//     canvas.drawCircle(
+//         Offset(center.dx - radius / 2, center.dy - radius / 2), 3, Paint());
+//     canvas.drawCircle(
+//         Offset(center.dx + radius / 2, center.dy - radius / 2), 3, Paint());
+//   }
 
-  _drowArc1(Canvas canvas, Size size) {
-var center = Offset(sliderPosition.dx - 30,sliderPosition.dy-heights*0.75) ;
-     var paint1 = Paint()
-      ..color = ui.Color.fromARGB(255, 10, 10, 10)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    //draw arc
-    canvas.drawArc(center & Size(30,30),
-        2.2, //radians
-        2, //radians
-        false,
-        paint1);
-  }
-   _drowArc2(Canvas canvas, Size size) {
-var center = Offset(sliderPosition.dx - 25, sliderPosition.dy-heights*0.744) ;
-     var paint1 = Paint()
-      ..color = ui.Color.fromARGB(255, 10, 10, 10)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    //draw arc
-    canvas.drawArc(center & Size(20,20),
-        2.2, //radians
-        2, //radians
-        false,
-        paint1);
-  }
+//   _drowArc1(Canvas canvas, Size size) {
+// var center = Offset(sliderPosition.dx - 30,sliderPosition.dy-heights*0.75) ;
+//      var paint1 = Paint()
+//       ..color = ui.Color.fromARGB(255, 10, 10, 10)
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2;
+//     //draw arc
+//     canvas.drawArc(center & Size(30,30),
+//         2.2, //radians
+//         2, //radians
+//         false,
+//         paint1);
+//   }
+//    _drowArc2(Canvas canvas, Size size) {
+// var center = Offset(sliderPosition.dx - 25, sliderPosition.dy-heights*0.744) ;
+//      var paint1 = Paint()
+//       ..color = ui.Color.fromARGB(255, 10, 10, 10)
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2;
+//     //draw arc
+//     canvas.drawArc(center & Size(20,20),
+//         2.2, //radians
+//         2, //radians
+//         false,
+//         paint1);
+//   }
 
-  _drowArc3(Canvas canvas, Size size) {
-var center = Offset(sliderPosition.dx + 5, sliderPosition.dy-heights*0.744) ;
-     var paint1 = Paint()
-      ..color = ui.Color.fromARGB(255, 10, 10, 10)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    //draw arc
-    canvas.drawArc(center & Size(20,20),
-        -1, //radians
-        2, //radians
-        false,
-        paint1);
-  }
-  _drowArc4(Canvas canvas, Size size) {
-var center = Offset(sliderPosition.dx + 0.4, sliderPosition.dy-heights*0.75) ;
-     var paint1 = Paint()
-      ..color = ui.Color.fromARGB(255, 10, 10, 10)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    //draw arc
-    canvas.drawArc(center & Size(30,30),
-        -1, //radians
-        2, //radians
-        false,
-        paint1);
-  }
+//   _drowArc3(Canvas canvas, Size size) {
+// var center = Offset(sliderPosition.dx + 5, sliderPosition.dy-heights*0.744) ;
+//      var paint1 = Paint()
+//       ..color = ui.Color.fromARGB(255, 10, 10, 10)
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2;
+//     //draw arc
+//     canvas.drawArc(center & Size(20,20),
+//         -1, //radians
+//         2, //radians
+//         false,
+//         paint1);
+//   }
+//   _drowArc4(Canvas canvas, Size size) {
+// var center = Offset(sliderPosition.dx + 0.4, sliderPosition.dy-heights*0.75) ;
+//      var paint1 = Paint()
+//       ..color = ui.Color.fromARGB(255, 10, 10, 10)
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2;
+//     //draw arc
+//     canvas.drawArc(center & Size(30,30),
+//         -1, //radians
+//         2, //radians
+//         false,
+//         paint1);
+//   }
 
   @override
   bool shouldRepaint(WavePainter oldDelegate) => true;
