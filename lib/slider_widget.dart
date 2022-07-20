@@ -73,14 +73,14 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
      _dragPosition=Offset(widget.ultimateWidth*0.4,widget.ultimateHeight*0.78);
     _dragPercentage=2.5;
       
-  _startStingAnimation();
+   _startStingAnimation();
+    
     
 
- _animationController=AnimationController(vsync: this,duration: Duration(milliseconds: 1));
-    _initAnimation();
+ _animationController=AnimationController(vsync: this,duration: Duration(milliseconds: 5));
 
-    _animationController.forward();
-  
+_initAnimation();
+    
   }
 
 
@@ -709,13 +709,10 @@ _UpdateDragPosion(details.localPosition);
             width: MediaQuery.of(context).size.width,
             child: Appbar())),
            
-        Positioned(
-         
-          bottom: 0,
-          child: Bottom_nav()),
+        
           Positioned(
              left:widget.ultimateWidth*0.415 - widget.ultimateWidth*0.415,
-         top: widget.ultimateHeight *0.78 - widget.ultimateHeight*0.72,
+         top: !GetContainerBack? widget.ultimateHeight *0.78 - widget.ultimateHeight*0.72:_dragPosition.dy+widget.ultimateHeight*0.12,
          
             child: Container(
               
@@ -743,6 +740,10 @@ _UpdateDragPosion(details.localPosition);
             
                    )),)),
           ),
+          Positioned(
+         
+          bottom: 0,
+          child: Bottom_nav()),
           
         Positioned(
          left:!GetContainerBack? widget.ultimateWidth*0.4- widget.ultimateWidth*0.415:_dragPosition.dx-widget.ultimateWidth*0.415,
