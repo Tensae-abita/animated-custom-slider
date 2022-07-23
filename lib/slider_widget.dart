@@ -475,16 +475,17 @@ Future.delayed(Duration(milliseconds:1500), () {
    
   }
 _onDoubleTap(){
-  PlayAudio();
+  
     doubletap=true;
      if(doubletap){
-
+PlayAudio();
      
     _UpdateDragPosion(_doubleTapDetails.localPosition);
+    
       animBegin=widget.ultimateHeight *0.65;
     animENd= widget.ultimateHeight *0.96;
     _startStingAnimation();
-  
+    
     _initAnimation();
       _animationController.forward();
     
@@ -516,6 +517,7 @@ Future.delayed(Duration(milliseconds:1500), () {
     
     });
     });}
+  
 }
   // animation after end of drag
 // animation after end of drag
@@ -552,24 +554,25 @@ bool GetContainerBack=false;
  void _onDragUpdateContainer(BuildContext context, DragUpdateDetails update){
     RenderBox? box= context.findRenderObject() as RenderBox?;
     Offset offset= box!.globalToLocal(update.globalPosition);
-      
+      _getWidgetInfo();
     _UpdateDragPosion(offset);
      setState(() {
-        _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155,  widget.ultimateHeight *0.78);
+        _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155,  widgetPosition+widget.ultimateHeight*0.03);
          getRotation();
            isDragging=true;
          
     });
-   
+    
   }
 
   void _onDragStartContianer(BuildContext context, DragStartDetails start){
     RenderBox? box= context.findRenderObject() as RenderBox?;
     Offset offset= box!.globalToLocal(start.globalPosition);
     _UpdateDragPosion(offset);
+    _getWidgetInfo();
     if(doubletap==false){
  setState(() { 
-       _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155, widget.ultimateHeight *0.78);
+       _dragPosition=Offset(offset.dx -widget.ultimateWidth*0.155,widgetPosition+widget.ultimateHeight*0.03);
        isDragging=true;
     });
  setState(() {
@@ -620,6 +623,7 @@ Future.delayed(Duration(milliseconds:1500), () {
   }
 
   void _onDoubleTapContainer(){
+    PlayAudio();
      doubletap=true;
      if(doubletap){
 
