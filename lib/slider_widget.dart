@@ -684,24 +684,17 @@ Future.delayed(Duration(milliseconds:1500), () {
 //play ausdio   
 void PlayAudio(){
 final player = AudioPlayer();
-if(_dragPercentage<=1.0){
-player.setVolume(0.02);
-    player.play(AssetSource('sound.wav')); 
-}else if (_dragPercentage<=2.0 && _dragPercentage>1.0){
-  player.setVolume(0.04);
-    player.play(AssetSource('sound.wav')); 
-}else if (_dragPercentage<=3.0 && _dragPercentage>2.0){
-  player.setVolume(0.06);
-    player.play(AssetSource('sound.wav')); 
-}else if (_dragPercentage<=4.0 && _dragPercentage>3.0){
-  player.setVolume(0.08);
-    player.play(AssetSource('sound.wav')); 
-}else if (_dragPercentage<=5.0 && _dragPercentage>4.0){
-  player.setVolume(0.1);
-    player.play(AssetSource('sound.wav')); 
-}
+if(_dragPercentage>=4.0){
 
-    
+    player.play(AssetSource('sounds/After_4.0_rating_sound.mp3')); 
+}else if (_dragPercentage>=2.0 && _dragPercentage<=3.5){
+  
+    player.play(AssetSource('sounds/sound_for_rating_between_2.0_to_3.5.mp3')); 
+}else if (_dragPercentage<=1.0 ){
+  
+    player.play(AssetSource('sounds/below_1.5_sound.mp3')); 
+}
+   
 }
 
 
