@@ -690,7 +690,7 @@ if(_dragPercentage>=4.0){
 }else if (_dragPercentage>=2.0 && _dragPercentage<=3.5){
   
     player.play(AssetSource('sounds/sound_for_rating_between_2.0_to_3.5.mp3')); 
-}else if (_dragPercentage<=1.0 ){
+}else if (_dragPercentage<=1.5 ){
   
     player.play(AssetSource('sounds/below_1.5_sound.mp3')); 
 }
