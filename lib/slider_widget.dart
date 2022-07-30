@@ -474,19 +474,56 @@ Future.delayed(Duration(milliseconds:1500), () {
      
    
   }
+   void _UpdateDragPosionCanvas(Offset val){
+    double newDragPosition=0;
+    if(val.dx <= widget.ultimateWidth*0.22){
+      newDragPosition=widget.ultimateWidth*0.22;
+    } else if(val.dx >= MediaQuery.of(context).size.width*0.90){
+      newDragPosition=MediaQuery.of(context).size.width*0.90;
+    }else{
+      newDragPosition=val.dx;
+    }
+
+    setState(() {
+      _dragPosition=Offset(newDragPosition, val.dy) ;
+      if(newDragPosition>widget.ultimateWidth*0.75 &&newDragPosition<widget.ultimateWidth*0.90){
+          _dragPercentage=5.0;
+      } else if(newDragPosition>widget.ultimateWidth*0.20 &&newDragPosition<widget.ultimateWidth*0.23){
+        _dragPercentage=0.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.24 &&newDragPosition<widget.ultimateWidth*0.26){
+        _dragPercentage=1.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.27 &&newDragPosition<widget.ultimateWidth*0.31){
+        _dragPercentage=1.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.32 &&newDragPosition<widget.ultimateWidth*0.35){
+        _dragPercentage=2.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.36 &&newDragPosition<widget.ultimateWidth*0.39){
+        _dragPercentage=2.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.40 &&newDragPosition<widget.ultimateWidth*0.55){
+        _dragPercentage=3.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.56 &&newDragPosition<widget.ultimateWidth*0.62){
+        _dragPercentage=3.5;
+      }else if(newDragPosition>widget.ultimateWidth*0.63 &&newDragPosition<widget.ultimateWidth*0.68){
+        _dragPercentage=4.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.69 &&newDragPosition<widget.ultimateWidth*0.75){
+        _dragPercentage=4.5;
+      }
+      
+    });
+   }
 _onDoubleTap(){
   
     doubletap=true;
      if(doubletap){
-PlayAudio();
+
      
-    _UpdateDragPosion(_doubleTapDetails.localPosition);
+    _UpdateDragPosionCanvas(_doubleTapDetails.localPosition);
     
       animBegin=widget.ultimateHeight *0.65;
     animENd= widget.ultimateHeight *0.96;
     _startStingAnimation();
     
     _initAnimation();
+    PlayAudio();
       _animationController.forward();
     
     TickerFuture tickerFuture = _animationController.repeat();
@@ -681,17 +718,17 @@ Future.delayed(Duration(milliseconds:1500), () {
    // get taped place 
 
 
-//play ausdio   
+//play audio   
 void PlayAudio(){
-final player = AudioPlayer();
-if(_dragPercentage>=4.0){
 
-    player.play(AssetSource('sounds/After_4.0_rating_sound.mp3')); 
-}else if (_dragPercentage>=2.0 && _dragPercentage<=3.5){
+final player = AudioPlayer();
+player.setVolume(0.14);
+if(_dragPercentage>=4.0){
   
     player.play(AssetSource('sounds/sound_for_rating_between_2.0_to_3.5.mp3')); 
+}else if (_dragPercentage>=2.0 && _dragPercentage<=3.5){
+    player.play(AssetSource('sounds/sound_for_rating_between_2.0_to_3.5.mp3')); 
 }else if (_dragPercentage<=1.5 ){
-  
     player.play(AssetSource('sounds/below_1.5_sound.mp3')); 
 }
    
@@ -753,37 +790,200 @@ _UpdateDragPosion(details.localPosition);
                     child: Appbar())),
         Container(
           child: SingleChildScrollView(
-            child: Stack(
+            child: Column(
               children: [
-                Container(
-                  height: widget.ultimateHeight*2,
-                ),
-              
-                   
-                
+                Stack(
+                  children: [
+                    Container(
+                      height: widget.ultimateHeight-(widget.ultimateHeight*0.1),
+                    ),
                   
-                
-                  
-                Positioned(
-                 left:!GetContainerBack? widget.ultimateWidth*0.4- widget.ultimateWidth*0.415:_dragPosition.dx-widget.ultimateWidth*0.415,
-                 top:!GetContainerBack? widget.ultimateHeight *0.78 - widget.ultimateHeight*0.72:(_dragPosition.dy-(widgetPosition-widget.ultimateHeight*0.75))-widget.ultimateHeight*0.72,
-                 
-                  child: Transform.rotate(
-                    angle:getRotation() ,
+                       
+                    
+                      
+                    
+                      
+                    Positioned(
+                     left:!GetContainerBack? widget.ultimateWidth*0.4- widget.ultimateWidth*0.415:_dragPosition.dx-widget.ultimateWidth*0.415,
+                     top:!GetContainerBack? widget.ultimateHeight *0.78 - widget.ultimateHeight*0.72:(_dragPosition.dy-(widgetPosition-widget.ultimateHeight*0.75))-widget.ultimateHeight*0.72,
                      
-                   child: GestureDetector(
-                       onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdateContainer(context, update),
-                       onHorizontalDragStart: (DragStartDetails start) => _onDragStartContianer(context,start),
-                       onHorizontalDragEnd: (DragEndDetails end)=> _onDragEndContainer(context , end),
-                       onDoubleTap: ()=>_onDoubleTapContainer(),
-                       onDoubleTapDown: _handleDoubleTapDown,
-                       onTapUp: (TapUpDetails details) => _onTapUp(details),
-                       onLongPressEnd: (LongPressEndDetails longpressend)=>_onlongPressEnd(longpressend),
-                       onLongPressMoveUpdate: (LongPressMoveUpdateDetails move)=>_onLongpressUpdate(move),
-                     child: Column(
-                       children: [
-                         body(),
-                           Container(
+                      child: Transform.rotate(
+                        angle:getRotation() ,
+                         
+                       child: GestureDetector(
+                           onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdateContainer(context, update),
+                           onHorizontalDragStart: (DragStartDetails start) => _onDragStartContianer(context,start),
+                           onHorizontalDragEnd: (DragEndDetails end)=> _onDragEndContainer(context , end),
+                           onDoubleTap: ()=>_onDoubleTapContainer(),
+                           onDoubleTapDown: _handleDoubleTapDown,
+                           onTapUp: (TapUpDetails details) => _onTapUp(details),
+                           onLongPressEnd: (LongPressEndDetails longpressend)=>_onlongPressEnd(longpressend),
+                           onLongPressMoveUpdate: (LongPressMoveUpdateDetails move)=>_onLongpressUpdate(move),
+                         child: Column(
+                           children: [
+                             body(),
+                              
+                           ],
+                         ),
+                       ))),
+                      //  Positioned(
+                      //   top: widget.ultimateHeight*0.06,
+          
+                        
+                      //    child: GestureDetector(
+                      //      child: Opacity(
+                      //       opacity: 0.0,
+                      //        child: Container(
+                      //         height: widget.ultimateHeight*0.66,
+                      //         width: widget.ultimateWidth,
+                      //         color: Colors.blue,
+                      //        ),
+                      //      ),
+                      //      onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdateContainer(context, update),
+                      //      onHorizontalDragStart: (DragStartDetails start) => _onDragStartContianer(context,start),
+                      //      onHorizontalDragEnd: (DragEndDetails end)=> _onDragEndContainer(context , end),
+                      //      onDoubleTap: ()=>_onDoubleTapContainer(),
+                      //      onDoubleTapDown: _handleDoubleTapDown,
+                      //      onTapUp: (TapUpDetails details) => _onTapUp(details),
+                      //      onLongPressEnd: (LongPressEndDetails longpressend)=>_onlongPressEnd(longpressend),
+                      //      onLongPressMoveUpdate: (LongPressMoveUpdateDetails move)=>_onLongpressUpdate(move),
+                      //    ),
+                      //  ),
+                         Positioned(
+                      left: _dragPosition.dx + widget.ultimateWidth*0.10,
+                      top:isDragging? _dragPosition.dy-widget.ultimateHeight*0.024 -(widgetPosition-widget.ultimateHeight*0.75):emoji? _dragPosition.dy-widget.ultimateHeight*0.024:emojiPlace,
+                      child: AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context,child){
+                          return  Transform.rotate(
+                            angle: sequenceAnimation['angle'].value,
+                            child: CircleAvatar(
+                            radius: sequenceAnimation['raduis'].value,
+                            backgroundColor: Color(0XFFF2F2F2),
+                            child:Image.asset('assets/images/emoji.png'),),
+                          );
+                        }
+                        
+                      )),
+                 
+                    Positioned(
+                      top: widget.ultimateHeight*0.73,
+                      left: widget.ultimateWidth*0.14,
+                      child: GestureDetector(
+                        child: Container(
+                          height: 80,
+                          // color: Colors.blue,
+                          key: _widgetKey,
+                          width:widget.ultimateWidth*0.82,
+                          
+                         
+                          child: CustomPaint(
+                            
+                            painter: WavePainter(
+                              widgetPosiion: isDragging?widgetPosition-widget.ultimateHeight*0.75:0,
+                              isDragging: isDragging,
+                              heights: widget.ultimateHeight,
+                              widths: widget.ultimateWidth,
+                              sliderPosition: isDragging? _dragPosition:Offset(_dragPosition.dx   ,originalpos ? _sliderAnimation.value:_dragPosition.dy), 
+                              dragPercentage: _dragPercentage,
+                              color: Color(0XFFF2F2F2),
+                            
+                              )
+                          ),
+                        ),
+                         onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdate(context, update),
+                        onHorizontalDragStart: (DragStartDetails start) => _onDragStart(context,start),
+                        onHorizontalDragEnd: (DragEndDetails end)=> _onDragEnd(context , end),
+                         onDoubleTap: ()=>_onDoubleTap(),
+                           onDoubleTapDown: _handleDoubleTapDown,
+                        
+                      ),
+                    ),
+                    
+                     AnimatedBuilder(
+                      animation: _controller,
+                       builder: (context,child){
+                          return Positioned(
+                                   left: _dragPosition.dx + widget.ultimateWidth*sequenceAnimation['number_width'].value,
+                                  top:isDragging? _dragPosition.dy-widget.ultimateHeight*sequenceAnimation['number_height'].value-(widgetPosition-widget.ultimateHeight*0.74):!emoji? _dragPosition.dy-widget.ultimateHeight*sequenceAnimation['number_height'].value-(widgetPosition-widget.ultimateHeight*0.74):_dragPosition.dy-widget.ultimateHeight*sequenceAnimation['number_height'].value,
+                             // child: Text(_dragPosition.dy.toString()),)
+                                   child: Opacity(
+                                    opacity: sequenceAnimation['fontOpacity'].value,
+                                     child: Text(
+                                      _dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString(),
+                                      style: TextStyle(
+                                                 fontSize: sequenceAnimation['font_size'].value,
+                                                 color: Colors.grey[900]
+                                       
+                                                 
+                                      ),
+                                      ),
+                                   ),);
+                 } ),
+                     Positioned(
+                       left: _dragPosition.dx + widget.ultimateWidth*0.06,
+                      top:isDragging? _dragPosition.dy-widget.ultimateHeight*0.020-(widgetPosition-widget.ultimateHeight*0.75):emoji? _dragPosition.dy-widget.ultimateHeight*0.020 :emojiPlace,
+                       child:AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context,child){
+                          return Row(
+                     
+                        children: [
+                          Row(
+                            children:  [
+                              Opacity(
+                                opacity: sequenceAnimation['opacity'].value,
+                                child: Text('(',
+                                
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight:FontWeight.bold,
+                                  
+                                ),),
+                              ),
+                               Opacity(
+                                opacity: sequenceAnimation['opacity'].value,
+          
+                                 child: Text('(',style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: ui.FontWeight.bold
+                                 ),),
+                               )
+                            ],
+                          ),
+                     
+                        const  SizedBox(
+                            width: 40,
+                          ),
+                          
+                           Row(
+                            children:  [
+                              Opacity(
+                                opacity: sequenceAnimation['opacity'].value,
+          
+                                child: Text(')',style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: ui.FontWeight.bold
+                                 ),),
+                              ),
+                               Opacity(
+                                opacity: sequenceAnimation['opacity'].value,
+          
+                                 child: Text(')',style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: ui.FontWeight.bold
+                                 ),),
+                               )
+                            ],
+                          ),
+                        ],
+                       );
+                       })
+                     )
+                 
+                  ],
+                ),
+                 Container(
                         
                           height: MediaQuery.of(context).size.height*0.83,
                             width: MediaQuery.of(context).size.width,
@@ -808,164 +1008,6 @@ _UpdateDragPosion(details.localPosition);
                       ],
                       
                              )),)),
-                       ],
-                     ),
-                   ))),
-                  //  Positioned(
-                  //   top: widget.ultimateHeight*0.06,
-          
-                    
-                  //    child: GestureDetector(
-                  //      child: Opacity(
-                  //       opacity: 0.0,
-                  //        child: Container(
-                  //         height: widget.ultimateHeight*0.66,
-                  //         width: widget.ultimateWidth,
-                  //         color: Colors.blue,
-                  //        ),
-                  //      ),
-                  //      onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdateContainer(context, update),
-                  //      onHorizontalDragStart: (DragStartDetails start) => _onDragStartContianer(context,start),
-                  //      onHorizontalDragEnd: (DragEndDetails end)=> _onDragEndContainer(context , end),
-                  //      onDoubleTap: ()=>_onDoubleTapContainer(),
-                  //      onDoubleTapDown: _handleDoubleTapDown,
-                  //      onTapUp: (TapUpDetails details) => _onTapUp(details),
-                  //      onLongPressEnd: (LongPressEndDetails longpressend)=>_onlongPressEnd(longpressend),
-                  //      onLongPressMoveUpdate: (LongPressMoveUpdateDetails move)=>_onLongpressUpdate(move),
-                  //    ),
-                  //  ),
-                     Positioned(
-                  left: _dragPosition.dx + widget.ultimateWidth*0.10,
-                  top:isDragging? _dragPosition.dy-widget.ultimateHeight*0.024 -(widgetPosition-widget.ultimateHeight*0.75):emoji? _dragPosition.dy-widget.ultimateHeight*0.024:emojiPlace,
-                  child: AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context,child){
-                      return  Transform.rotate(
-                        angle: sequenceAnimation['angle'].value,
-                        child: CircleAvatar(
-                        radius: sequenceAnimation['raduis'].value,
-                        backgroundColor: Color(0XFFF2F2F2),
-                        child:Image.asset('assets/images/emoji.png'),),
-                      );
-                    }
-                    
-                  )),
-             
-                Positioned(
-                  top: widget.ultimateHeight*0.73,
-                  left: widget.ultimateWidth*0.14,
-                  child: GestureDetector(
-                    child: Container(
-                      height: 80,
-                      // color: Colors.blue,
-                      key: _widgetKey,
-                      width:widget.ultimateWidth*0.82,
-                      
-                     
-                      child: CustomPaint(
-                        
-                        painter: WavePainter(
-                          widgetPosiion: isDragging?widgetPosition-widget.ultimateHeight*0.75:0,
-                          isDragging: isDragging,
-                          heights: widget.ultimateHeight,
-                          widths: widget.ultimateWidth,
-                          sliderPosition: isDragging? _dragPosition:Offset(_dragPosition.dx   ,originalpos ? _sliderAnimation.value:_dragPosition.dy), 
-                          dragPercentage: _dragPercentage,
-                          color: Color(0XFFF2F2F2),
-                        
-                          )
-                      ),
-                    ),
-                     onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdate(context, update),
-                    onHorizontalDragStart: (DragStartDetails start) => _onDragStart(context,start),
-                    onHorizontalDragEnd: (DragEndDetails end)=> _onDragEnd(context , end),
-                     onDoubleTap: ()=>_onDoubleTap(),
-                       onDoubleTapDown: _handleDoubleTapDown,
-                    
-                  ),
-                ),
-                
-                 AnimatedBuilder(
-                  animation: _controller,
-                   builder: (context,child){
-                      return Positioned(
-                               left: _dragPosition.dx + widget.ultimateWidth*sequenceAnimation['number_width'].value,
-                              top:isDragging? _dragPosition.dy-widget.ultimateHeight*sequenceAnimation['number_height'].value-(widgetPosition-widget.ultimateHeight*0.74):!emoji? _dragPosition.dy-widget.ultimateHeight*sequenceAnimation['number_height'].value-(widgetPosition-widget.ultimateHeight*0.74):_dragPosition.dy-widget.ultimateHeight*sequenceAnimation['number_height'].value,
-                         // child: Text(_dragPosition.dy.toString()),)
-                               child: Opacity(
-                                opacity: sequenceAnimation['fontOpacity'].value,
-                                 child: Text(
-                                  _dragPercentage.toString().length > 3 ? '${_dragPercentage.toString().substring(0, 3)}' :_dragPercentage.toString(),
-                                  style: TextStyle(
-                                             fontSize: sequenceAnimation['font_size'].value,
-                                             color: Colors.grey[900]
-                                   
-                                             
-                                  ),
-                                  ),
-                               ),);
-             } ),
-                 Positioned(
-                   left: _dragPosition.dx + widget.ultimateWidth*0.06,
-                  top:isDragging? _dragPosition.dy-widget.ultimateHeight*0.020-(widgetPosition-widget.ultimateHeight*0.75):emoji? _dragPosition.dy-widget.ultimateHeight*0.020 :emojiPlace,
-                   child:AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context,child){
-                      return Row(
-                 
-                    children: [
-                      Row(
-                        children:  [
-                          Opacity(
-                            opacity: sequenceAnimation['opacity'].value,
-                            child: Text('(',
-                            
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight:FontWeight.bold,
-                              
-                            ),),
-                          ),
-                           Opacity(
-                            opacity: sequenceAnimation['opacity'].value,
-          
-                             child: Text('(',style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: ui.FontWeight.bold
-                             ),),
-                           )
-                        ],
-                      ),
-                 
-                    const  SizedBox(
-                        width: 40,
-                      ),
-                      
-                       Row(
-                        children:  [
-                          Opacity(
-                            opacity: sequenceAnimation['opacity'].value,
-          
-                            child: Text(')',style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: ui.FontWeight.bold
-                             ),),
-                          ),
-                           Opacity(
-                            opacity: sequenceAnimation['opacity'].value,
-          
-                             child: Text(')',style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: ui.FontWeight.bold
-                             ),),
-                           )
-                        ],
-                      ),
-                    ],
-                   );
-                   })
-                 )
-             
               ],
             ),
           ),
