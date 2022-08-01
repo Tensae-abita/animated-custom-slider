@@ -355,9 +355,12 @@ void _startStingAnimation(){
 
     setState(() {
       _dragPosition=Offset(newDragPosition, val.dy) ;
-      if(newDragPosition>widget.ultimateWidth*0.22 &&newDragPosition<widget.ultimateWidth*0.29){
-          _dragPercentage=0.5;
-      } else if(newDragPosition>widget.ultimateWidth*0.29 &&newDragPosition<widget.ultimateWidth*0.36){
+      if(newDragPosition==widget.ultimateWidth*0.22){
+          _dragPercentage=0.0;
+      }else if(newDragPosition>widget.ultimateWidth*0.22 &&newDragPosition<widget.ultimateWidth*0.29){
+        _dragPercentage=0.5;
+      }
+       else if(newDragPosition>widget.ultimateWidth*0.29 &&newDragPosition<widget.ultimateWidth*0.36){
         _dragPercentage=1.0;
       }else if(newDragPosition>widget.ultimateWidth*0.36 &&newDragPosition<widget.ultimateWidth*0.43){
         _dragPercentage=1.5;
@@ -474,49 +477,14 @@ Future.delayed(Duration(milliseconds:1500), () {
      
    
   }
-   void _UpdateDragPosionCanvas(Offset val){
-    double newDragPosition=0;
-    if(val.dx <= widget.ultimateWidth*0.22){
-      newDragPosition=widget.ultimateWidth*0.22;
-    } else if(val.dx >= MediaQuery.of(context).size.width*0.90){
-      newDragPosition=MediaQuery.of(context).size.width*0.90;
-    }else{
-      newDragPosition=val.dx;
-    }
-
-    setState(() {
-      _dragPosition=Offset(newDragPosition, val.dy) ;
-      if(newDragPosition>widget.ultimateWidth*0.75 &&newDragPosition<widget.ultimateWidth*0.90){
-          _dragPercentage=5.0;
-      } else if(newDragPosition>widget.ultimateWidth*0.20 &&newDragPosition<widget.ultimateWidth*0.23){
-        _dragPercentage=0.5;
-      }else if(newDragPosition>widget.ultimateWidth*0.24 &&newDragPosition<widget.ultimateWidth*0.26){
-        _dragPercentage=1.0;
-      }else if(newDragPosition>widget.ultimateWidth*0.27 &&newDragPosition<widget.ultimateWidth*0.31){
-        _dragPercentage=1.5;
-      }else if(newDragPosition>widget.ultimateWidth*0.32 &&newDragPosition<widget.ultimateWidth*0.35){
-        _dragPercentage=2.0;
-      }else if(newDragPosition>widget.ultimateWidth*0.36 &&newDragPosition<widget.ultimateWidth*0.39){
-        _dragPercentage=2.5;
-      }else if(newDragPosition>widget.ultimateWidth*0.40 &&newDragPosition<widget.ultimateWidth*0.55){
-        _dragPercentage=3.0;
-      }else if(newDragPosition>widget.ultimateWidth*0.56 &&newDragPosition<widget.ultimateWidth*0.62){
-        _dragPercentage=3.5;
-      }else if(newDragPosition>widget.ultimateWidth*0.63 &&newDragPosition<widget.ultimateWidth*0.68){
-        _dragPercentage=4.0;
-      }else if(newDragPosition>widget.ultimateWidth*0.69 &&newDragPosition<widget.ultimateWidth*0.75){
-        _dragPercentage=4.5;
-      }
-      
-    });
-   }
+   
 _onDoubleTap(){
   
     doubletap=true;
      if(doubletap){
 
      
-    _UpdateDragPosionCanvas(_doubleTapDetails.localPosition);
+    _UpdateDragPosion(_doubleTapDetails.localPosition);
     
       animBegin=widget.ultimateHeight *0.65;
     animENd= widget.ultimateHeight *0.96;
@@ -814,7 +782,7 @@ _UpdateDragPosion(details.localPosition);
                            onHorizontalDragUpdate: (DragUpdateDetails update) => _onDragUpdateContainer(context, update),
                            onHorizontalDragStart: (DragStartDetails start) => _onDragStartContianer(context,start),
                            onHorizontalDragEnd: (DragEndDetails end)=> _onDragEndContainer(context , end),
-                           onDoubleTap: ()=>_onDoubleTapContainer(),
+                          //  onDoubleTap: ()=>_onDoubleTapContainer(),
                            onDoubleTapDown: _handleDoubleTapDown,
                            onTapUp: (TapUpDetails details) => _onTapUp(details),
                            onLongPressEnd: (LongPressEndDetails longpressend)=>_onlongPressEnd(longpressend),
